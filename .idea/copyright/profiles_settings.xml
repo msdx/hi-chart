@@ -1,0 +1,10 @@
+<component name="CopyrightManager">
+  <settings default="java">
+    <module2copyright>
+      <element module="All" copyright="java" />
+    </module2copyright>
+    <LanguageOptions name="__TEMPLATE__">
+      <option name="addBlankAfter" value="false" />
+    </LanguageOptions>
+  </settings>
+</component>
