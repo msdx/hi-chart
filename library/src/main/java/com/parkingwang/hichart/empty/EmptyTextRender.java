@@ -14,7 +14,7 @@ import com.parkingwang.hichart.render.BaseRender;
  * 图表没有数据时的
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
- * @since 2017-06-14
+ * @since 2017-06-14 0.1
  */
 public class EmptyTextRender extends BaseRender implements EmptyRender {
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
@@ -29,8 +29,8 @@ public class EmptyTextRender extends BaseRender implements EmptyRender {
         if (TextUtils.isEmpty(mText)) {
             return;
         }
-        final float x = (mArea.left + mArea.right) / 2;
-        final float y = (mArea.top + mArea.bottom) / 2 - (mPaint.ascent() + mPaint.descent()) / 2;
+        final float x = (mDrawRect.left + mDrawRect.right) / 2;
+        final float y = (mDrawRect.top + mDrawRect.bottom) / 2 - (mPaint.ascent() + mPaint.descent()) / 2;
         canvas.drawText(mText, x, y, mPaint);
     }
 

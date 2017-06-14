@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
 import com.parkingwang.hichart.data.Entry;
+import com.parkingwang.hichart.divider.DividersRender;
 import com.parkingwang.hichart.empty.EmptyRender;
 import com.parkingwang.hichart.listener.OnChartValueSelectedListener;
 
@@ -33,6 +34,7 @@ public class LineChartView extends FrameLayout {
 
     private List<Entry> mEntryList;
 
+    private DividersRender mDividersRender;
     private EmptyRender mEmptyRender;
     private YAxis mYAxis;
     private LineFillRender mLineFillRender;
@@ -67,6 +69,7 @@ public class LineChartView extends FrameLayout {
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         setFilterTouchesWhenObscured(false);
         mYAxis = new YAxis();
+        mDividersRender = new DividersRender();
         mLineFillRender = new LineFillRender();
         mLineRender = new LineRender(mYAxis);
         mHighlightRender = new HighlightRender();
@@ -101,6 +104,14 @@ public class LineChartView extends FrameLayout {
 
     public YAxis getYAxis() {
         return mYAxis;
+    }
+
+    public DividersRender getDividersRender() {
+        return mDividersRender;
+    }
+
+    public void setDividersRender(DividersRender dividersRender) {
+        mDividersRender = dividersRender == null ? new DividersRender() : dividersRender;
     }
 
     public EmptyRender getEmptyRender() {
@@ -158,6 +169,7 @@ public class LineChartView extends FrameLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        drawDividers(canvas);
         if (mEntryList.isEmpty()) {
             drawEmpty(canvas);
             return;
@@ -175,11 +187,16 @@ public class LineChartView extends FrameLayout {
         }
     }
 
+    private void drawDividers(Canvas canvas) {
+        mDividersRender.setDrawRect(0, 0, getWidth(), getHeight());
+        mDividersRender.draw(canvas);
+    }
+
     private void drawEmpty(Canvas canvas) {
         if (mEmptyRender == null) {
             return;
         }
-        mEmptyRender.setRenderArea(0, 0, getWidth(), getHeight());
+        mEmptyRender.setDrawRect(0, 0, getWidth(), getHeight());
         mEmptyRender.draw(canvas);
     }
 

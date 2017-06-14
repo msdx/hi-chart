@@ -3,8 +3,9 @@
   -->
 <resources>
     <string name="app_name">HiChart</string>
-    <string name="update">更新数据</string>
+    <string name="random_data">随机数据</string>
     <string name="clear">清空数据</string>
     <string name="show_empty">显示没有数据</string>
     <string name="no_data">没有数据</string>
+    <string name="top_divider">顶部分割线</string>
 </resources>

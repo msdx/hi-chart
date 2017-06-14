@@ -13,7 +13,7 @@ import android.graphics.Canvas;
  */
 public interface Render {
 
-    void setRenderArea(float left, float top, float right, float bottom);
+    void setDrawRect(float left, float top, float right, float bottom);
 
     void draw(Canvas canvas);
 }

@@ -13,7 +13,7 @@
         <Button
             android:id="@+id/update"
             style="@style/Wrap.OnClick"
-            android:text="@string/update"/>
+            android:text="@string/random_data"/>
         <Button
             android:id="@+id/clear"
             style="@style/Wrap.OnClick"
@@ -41,5 +41,9 @@
             android:id="@+id/show_empty"
             style="@style/Wrap"
             android:text="@string/show_empty"/>
+        <CheckBox
+            android:id="@+id/top_divider"
+            style="@style/Wrap"
+            android:text="@string/top_divider"/>
     </com.wefika.flowlayout.FlowLayout>
 </LinearLayout>

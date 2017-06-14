@@ -6,6 +6,7 @@ package com.parkingwang.hichart.demo;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -14,6 +15,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import com.parkingwang.hichart.data.Entry;
+import com.parkingwang.hichart.divider.Divider;
+import com.parkingwang.hichart.divider.DividersRender;
 import com.parkingwang.hichart.empty.EmptyTextRender;
 import com.parkingwang.hichart.formatter.AxisValueFormatter;
 import com.parkingwang.hichart.line.HighlightRender;
@@ -42,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private LabelFormatter mLabelFormatter;
     private int mColumn;
 
+    private Random mRandom = new Random();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,18 +55,24 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         mLineChart = (LineChartView) findViewById(R.id.line_chart);
         mChartLabel = (LineChartLabel) findViewById(R.id.chart_labels);
 
+        mColumn = mRandom.nextInt(18) + 7;
+
         configLineChart(new LineChartConfig());
-
         configChartLabel();
-
         setLabelFormatter(new LabelFormatter() {
             @Override
             public String getFormattedLabel(int index, int column) {
                 return String.valueOf(index + 1);
             }
         });
-        CheckBox showEmpty = (CheckBox) findViewById(R.id.show_empty);
-        showEmpty.setOnCheckedChangeListener(this);
+
+        setCheckBoxesListener(R.id.show_empty, R.id.top_divider);
+    }
+
+    private void setCheckBoxesListener(@IdRes int... ids) {
+        for (int id : ids) {
+            ((CheckBox) findViewById(id)).setOnCheckedChangeListener(this);
+        }
     }
 
     private void configChartLabel() {
@@ -151,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     private void clearData() {
         mLineChart.setLineData(null);
-        setColumn(7);
         notifyLabelsChanged();
     }
 
@@ -169,11 +179,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     }
 
     private void fillData() {
-        Random random = new Random();
-        int length = random.nextInt(18) + 7;
-        List<Entry> entryList = new ArrayList<>(length);
-        for (int i = 0; i < length; i++) {
-            entryList.add(new Entry(i, random.nextInt(100000)));
+        mColumn = mRandom.nextInt(18) + 7;
+        List<Entry> entryList = new ArrayList<>(mColumn);
+        for (int i = 0; i < mColumn; i++) {
+            entryList.add(new Entry(i, mRandom.nextInt(100000)));
         }
 
         final float offsetLeft = mChartLabel.getOffsetLeft();
@@ -188,9 +197,18 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (buttonView.getId() == R.id.show_empty) {
-            showEmpty(isChecked);
+        final int id = buttonView.getId();
+        switch (id) {
+            case R.id.show_empty:
+                showEmpty(isChecked);
+                break;
+            case R.id.top_divider:
+                showTopDivider(isChecked);
+                break;
+            default:
+                return;
         }
+        mLineChart.invalidate();
     }
 
     private void showEmpty(boolean show) {
@@ -202,6 +220,19 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             mLineChart.setEmptyRender(textRender);
         } else {
             mLineChart.setEmptyRender(null);
+        }
+    }
+
+    private void showTopDivider(boolean show) {
+        DividersRender render = mLineChart.getDividersRender();
+        if (show) {
+            Divider divider = new Divider();
+            divider.setPadding(dpToPx(12));
+            divider.setWidth(2);
+            divider.setColor(Color.parseColor("#4DFFFFFF"));
+            render.setTopDivider(divider);
+        } else {
+            render.setTopDivider(null);
         }
     }
 
