@@ -14,6 +14,10 @@ import android.graphics.RectF;
 public abstract class BaseRender implements Render {
     protected RectF mDrawRect = new RectF();
 
+    public RectF getDrawRect() {
+        return mDrawRect;
+    }
+
     @Override
     public void setDrawRect(float left, float top, float right, float bottom) {
         mDrawRect.set(left, top, right, bottom);

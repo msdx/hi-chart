@@ -23,15 +23,8 @@
     <com.parkingwang.hichart.line.LineChartView
         android:id="@+id/line_chart"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="280dp"
         android:background="#1D8FEE"/>
-    <com.parkingwang.hichart.line.LineChartLabel
-        android:id="@+id/chart_labels"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="@android:color/white"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"/>
 
     <com.wefika.flowlayout.FlowLayout
         android:layout_width="match_parent"
@@ -45,5 +38,9 @@
             android:id="@+id/top_divider"
             style="@style/Wrap"
             android:text="@string/top_divider"/>
+        <CheckBox
+            android:id="@+id/custom_x_axis"
+            style="@style/Wrap"
+            android:text="@string/custom_x_axis"/>
     </com.wefika.flowlayout.FlowLayout>
 </LinearLayout>

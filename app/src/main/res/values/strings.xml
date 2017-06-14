@@ -8,4 +8,5 @@
     <string name="show_empty">显示没有数据</string>
     <string name="no_data">没有数据</string>
     <string name="top_divider">顶部分割线</string>
+    <string name="custom_x_axis">固定底部坐标轴</string>
 </resources>

@@ -3,24 +3,26 @@
  */
 package com.parkingwang.hichart.demo;
 
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
+import com.parkingwang.hichart.axis.FixedXAxis;
+import com.parkingwang.hichart.axis.FixedXAxisRender;
+import com.parkingwang.hichart.axis.XAxis;
+import com.parkingwang.hichart.axis.XAxisRender;
 import com.parkingwang.hichart.data.Entry;
 import com.parkingwang.hichart.divider.Divider;
 import com.parkingwang.hichart.divider.DividersRender;
 import com.parkingwang.hichart.empty.EmptyTextRender;
 import com.parkingwang.hichart.formatter.AxisValueFormatter;
 import com.parkingwang.hichart.line.HighlightRender;
-import com.parkingwang.hichart.line.LineChartLabel;
 import com.parkingwang.hichart.line.LineChartView;
 import com.parkingwang.hichart.line.LineRender;
 import com.parkingwang.hichart.line.YAxis;
@@ -40,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private static final DecimalFormat YUAN_FORMAT = new DecimalFormat("0.#");
 
     private LineChartView mLineChart;
-    private LineChartLabel mChartLabel;
 
     private LabelFormatter mLabelFormatter;
     private int mColumn;
@@ -53,12 +54,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         setContentView(R.layout.activity_main);
 
         mLineChart = (LineChartView) findViewById(R.id.line_chart);
-        mChartLabel = (LineChartLabel) findViewById(R.id.chart_labels);
 
         mColumn = mRandom.nextInt(18) + 7;
 
         configLineChart(new LineChartConfig());
-        configChartLabel();
         setLabelFormatter(new LabelFormatter() {
             @Override
             public String getFormattedLabel(int index, int column) {
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
         });
 
-        setCheckBoxesListener(R.id.show_empty, R.id.top_divider);
+        setCheckBoxesListener(R.id.show_empty, R.id.top_divider, R.id.custom_x_axis);
     }
 
     private void setCheckBoxesListener(@IdRes int... ids) {
@@ -75,13 +74,17 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
     }
 
-    private void configChartLabel() {
-        DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
-        mChartLabel.setOffsetLeft((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, dm));
-        mChartLabel.setOffsetRight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25, dm));
-    }
-
     public void configLineChart(LineChartConfig config) {
+        XAxis xAxis = mLineChart.getXAxis();
+        xAxis.setDrawCount(config.xAxisConfig.labelCount);
+        XAxisRender xAxisRender = mLineChart.getXAxisRender();
+        xAxisRender.setHeight(dpToPx(30));
+        xAxisRender.setPaddingLeft(dpToPx(10));
+        xAxisRender.setPaddingRight(dpToPx(10));
+        xAxisRender.setTextColor(config.xAxisConfig.labelColor);
+        xAxisRender.setTextSize(spToPx(config.xAxisConfig.labelTextSize));
+        xAxisRender.setDrawBackground(true);
+
         LineChartConfig.AxisRightConfig rightConfig = config.axisRightConfig;
         YAxis right = mLineChart.getYAxis();
         right.setDrawLabels(rightConfig.drawLabels);
@@ -119,8 +122,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         mLineChart.getLineFillRender().setFillColor(dataSetConfig.fillColor);
 
-        setXAxisLabelCount(config.xAxisConfig.labelCount);
-
         final LineChartConfig.HighlightConfig highlightConfig = config.highlightConfig;
         HighlightRender highlightRender = mLineChart.getHighlightRender();
         highlightRender.setHighlightCircleColor(highlightConfig.circleColor);
@@ -128,20 +129,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         highlightRender.setHighlightLineColor(highlightConfig.lineColor);
         highlightRender.setHighlightLineWidth(dpToPx(highlightConfig.lineWidth));
 
-        mChartLabel.setTextColor(config.xAxisConfig.labelColor);
-        mChartLabel.setTextSize(config.xAxisConfig.labelTextSize);
-        mChartLabel.setMaxCount(config.xAxisConfig.labelCount);
-
         mLineChart.setAnimatorTime(ANIMATOR_TIME);
         mLineChart.setAnimatorStartDelay(ANIMATOR_DELAY);
     }
 
     public void setLabelFormatter(LabelFormatter labelFormatter) {
         mLabelFormatter = labelFormatter;
-    }
-
-    public void setXAxisLabelCount(int count) {
-        mChartLabel.setMaxCount(count);
     }
 
     public void setColumn(int column) {
@@ -162,10 +155,30 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     private void clearData() {
         mLineChart.setLineData(null);
-        notifyLabelsChanged();
     }
 
-    public void notifyLabelsChanged() {
+    private void fillData() {
+        mColumn = mRandom.nextInt(18) + 7;
+        XAxis xAxis = mLineChart.getXAxis();
+        if (xAxis instanceof FixedXAxis) {
+            ((FixedXAxis) xAxis).setLabels(generateLabels());
+        }
+
+        List<Entry> entryList = new ArrayList<>(mColumn);
+        for (int i = 0; i < mColumn; i++) {
+            entryList.add(new Entry(i, mRandom.nextInt(100000)));
+        }
+
+        final float offsetLeft = dpToPx(10);
+        final float offsetRight = dpToPx(25);
+        final float offsetBottom = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
+        mLineChart.setLineChartInsets(offsetLeft, mLineChart.getHeight() / 7, offsetRight, offsetBottom);
+
+        mLineChart.setLineData(entryList);
+    }
+
+    @NonNull
+    private List<String> generateLabels() {
         final List<String> labels = new ArrayList<>();
         final LabelFormatter formatter = mLabelFormatter;
         if (formatter != null) {
@@ -173,26 +186,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 labels.add(formatter.getFormattedLabel(i, mColumn));
             }
         }
-
-        mChartLabel.setLabels(labels);
-        mChartLabel.invalidate();
-    }
-
-    private void fillData() {
-        mColumn = mRandom.nextInt(18) + 7;
-        List<Entry> entryList = new ArrayList<>(mColumn);
-        for (int i = 0; i < mColumn; i++) {
-            entryList.add(new Entry(i, mRandom.nextInt(100000)));
-        }
-
-        final float offsetLeft = mChartLabel.getOffsetLeft();
-        final float offsetRight = mChartLabel.getOffsetRight();
-        final float offsetBottom = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
-        mLineChart.setLineChartInsets(offsetLeft, mLineChart.getHeight() / 7, offsetRight, offsetBottom);
-
-        mLineChart.setLineData(entryList);
-        setColumn(entryList.size());
-        notifyLabelsChanged();
+        return labels;
     }
 
     @Override
@@ -204,6 +198,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 break;
             case R.id.top_divider:
                 showTopDivider(isChecked);
+                break;
+            case R.id.custom_x_axis:
+                showFixedXAxis(isChecked);
                 break;
             default:
                 return;
@@ -234,6 +231,30 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         } else {
             render.setTopDivider(null);
         }
+    }
+
+    private void showFixedXAxis(boolean show) {
+        XAxisRender xAxisRender;
+        if (show) {
+            FixedXAxis axis = new FixedXAxis();
+            axis.setDrawCount(7);
+            mLineChart.setXAxis(axis);
+            xAxisRender = new FixedXAxisRender(axis);
+            axis.setLabels(generateLabels());
+        } else {
+            XAxis axis = new XAxis();
+            axis.setDrawCount(7);
+            mLineChart.setXAxis(axis);
+            xAxisRender = new XAxisRender(axis);
+        }
+        xAxisRender.setHeight(dpToPx(30));
+        xAxisRender.setPaddingLeft(dpToPx(10));
+        xAxisRender.setPaddingRight(dpToPx(10));
+        xAxisRender.setBackgroundColor(Color.WHITE);
+        xAxisRender.setDrawBackground(true);
+        xAxisRender.setTextColor(Color.parseColor("#B6CCDE"));
+        xAxisRender.setTextSize(spToPx(10));
+        mLineChart.setXAxisRender(xAxisRender);
     }
 
     private float dpToPx(float dp) {

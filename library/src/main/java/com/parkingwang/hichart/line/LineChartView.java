@@ -9,11 +9,15 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PointF;
+import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
+import com.parkingwang.hichart.axis.XAxis;
+import com.parkingwang.hichart.axis.XAxisRender;
+import com.parkingwang.hichart.data.DataRender;
 import com.parkingwang.hichart.data.Entry;
 import com.parkingwang.hichart.divider.DividersRender;
 import com.parkingwang.hichart.empty.EmptyRender;
@@ -34,12 +38,15 @@ public class LineChartView extends FrameLayout {
 
     private List<Entry> mEntryList;
 
+    private DataRender mDataRender;
     private DividersRender mDividersRender;
     private EmptyRender mEmptyRender;
     private YAxis mYAxis;
     private LineFillRender mLineFillRender;
     private LineRender mLineRender;
     private HighlightRender mHighlightRender;
+    private XAxis mXAxis;
+    private XAxisRender mXAxisRender;
 
     private float mInsetLeft;
     private float mInsetTop;
@@ -69,10 +76,14 @@ public class LineChartView extends FrameLayout {
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         setFilterTouchesWhenObscured(false);
         mYAxis = new YAxis();
+        mDataRender = new DataRender();
         mDividersRender = new DividersRender();
         mLineFillRender = new LineFillRender();
         mLineRender = new LineRender(mYAxis);
         mHighlightRender = new HighlightRender();
+        mXAxis = new XAxis();
+        mXAxisRender = new XAxisRender(mXAxis);
+        mXAxisRender.attachTo(this);
 
         mEntryList = new ArrayList<>();
         mAnimator = ValueAnimator.ofFloat(0, DEFAULT_DRAW_PERCENT);
@@ -106,6 +117,14 @@ public class LineChartView extends FrameLayout {
         return mYAxis;
     }
 
+    public DataRender getDataRender() {
+        return mDataRender;
+    }
+
+    public void setDataRender(DataRender dataRender) {
+        mDataRender = dataRender;
+    }
+
     public DividersRender getDividersRender() {
         return mDividersRender;
     }
@@ -134,6 +153,23 @@ public class LineChartView extends FrameLayout {
         return mHighlightRender;
     }
 
+    public XAxis getXAxis() {
+        return mXAxis;
+    }
+
+    public void setXAxis(XAxis XAxis) {
+        mXAxis = XAxis;
+    }
+
+    public XAxisRender getXAxisRender() {
+        return mXAxisRender;
+    }
+
+    public void setXAxisRender(XAxisRender XAxisRender) {
+        mXAxisRender = XAxisRender;
+        mXAxisRender.attachTo(this);
+    }
+
     public List<Entry> getLineData() {
         return mEntryList;
     }
@@ -149,11 +185,14 @@ public class LineChartView extends FrameLayout {
         mInsetTop = top;
         mInsetRight = right;
         mInsetBottom = bottom;
-        mYAxis.setOffset(left, top, right, bottom);
-        mLineFillRender.setFillContent(mInsetLeft, mInsetTop, getWidth() - right, getBottom());
     }
 
     private void notifyDataSetChanged() {
+        mDataRender.setDrawRect(mInsetLeft, 0, getRight() - mInsetRight, getHeight() - mXAxisRender.getHeight());
+        RectF rectF = mDataRender.getDrawRect();
+        mLineFillRender.setFillContent(rectF.left, rectF.top, rectF.right, rectF.bottom);
+        mYAxis.setOffset(rectF.left, rectF.top + mInsetTop, getWidth() - rectF.right, getHeight() - rectF.bottom + mInsetBottom);
+
         mYAxis.calcMinMax(mEntryList);
         mLineRender.update(mEntryList);
         mLineFillRender.updateFillArea(mLineRender.getLinePath());
@@ -169,22 +208,28 @@ public class LineChartView extends FrameLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        // TODO: 17-6-14 这里需要把mInsetRight改为 getRight() - Math.max(mInsetRight, mYAxisRender.getWidth());
+        mDataRender.setDrawRect(mInsetLeft, 0, getRight() - mInsetRight, getHeight() - mXAxisRender.getHeight());
+        RectF rectF = mDataRender.getDrawRect();
+        mLineFillRender.setFillContent(rectF.left, rectF.top, rectF.right, rectF.bottom);
+        mYAxis.setOffset(rectF.left, rectF.top + mInsetTop, getWidth() - rectF.right, getHeight() - rectF.bottom + mInsetBottom);
         drawDividers(canvas);
         if (mEntryList.isEmpty()) {
             drawEmpty(canvas);
-            return;
-        }
-        mYAxis.draw(canvas);
-        if (mDrawPercent == DEFAULT_DRAW_PERCENT) {
-            mLineFillRender.draw(canvas);
-        }
-        mLineRender.draw(canvas, mDrawPercent);
-        if (mDrawPercent == DEFAULT_DRAW_PERCENT && mCurrentHighlightPosition >= 0) {
-            List<PointF> pointList = mLineRender.getPoints();
-            if (pointList.size() > mCurrentHighlightPosition) {
-                mHighlightRender.draw(canvas, pointList.get(mCurrentHighlightPosition), getBottom());
+        } else {
+            if (mDrawPercent == DEFAULT_DRAW_PERCENT) {
+                mLineFillRender.draw(canvas);
+            }
+            mLineRender.draw(canvas, mDrawPercent);
+            if (mDrawPercent == DEFAULT_DRAW_PERCENT && mCurrentHighlightPosition >= 0) {
+                List<PointF> pointList = mLineRender.getPoints();
+                if (pointList.size() > mCurrentHighlightPosition) {
+                    mHighlightRender.draw(canvas, pointList.get(mCurrentHighlightPosition), getBottom());
+                }
             }
         }
+        mYAxis.draw(canvas);
+        drawXAxis(canvas);
     }
 
     private void drawDividers(Canvas canvas) {
@@ -192,11 +237,20 @@ public class LineChartView extends FrameLayout {
         mDividersRender.draw(canvas);
     }
 
+    private void drawXAxis(Canvas canvas) {
+        mXAxisRender.setDrawRect(0, 0, getWidth(), getHeight() - mDataRender.getDrawRect().bottom);
+        canvas.save();
+        canvas.translate(0, mDataRender.getDrawRect().bottom);
+        mXAxisRender.draw(canvas);
+        canvas.restore();
+    }
+
     private void drawEmpty(Canvas canvas) {
         if (mEmptyRender == null) {
             return;
         }
-        mEmptyRender.setDrawRect(0, 0, getWidth(), getHeight());
+        RectF rect = mDataRender.getDrawRect();
+        mEmptyRender.setDrawRect(rect.left, rect.top, rect.right, rect.bottom);
         mEmptyRender.draw(canvas);
     }
 
@@ -210,7 +264,7 @@ public class LineChartView extends FrameLayout {
         }
     }
 
-    public void highlighValue(int position) {
+    public void highlightValue(int position) {
         onHighlightValue(position);
     }
 

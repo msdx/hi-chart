@@ -4,6 +4,7 @@
 package com.parkingwang.hichart.render;
 
 import android.graphics.Canvas;
+import android.graphics.RectF;
 
 /**
  * Render接口，设置每个Render应该绘制的区域。
@@ -12,6 +13,7 @@ import android.graphics.Canvas;
  * @since 2017-06-14 0.1
  */
 public interface Render {
+    RectF getDrawRect();
 
     void setDrawRect(float left, float top, float right, float bottom);
 
