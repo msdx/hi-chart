@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
 import com.parkingwang.hichart.data.Entry;
+import com.parkingwang.hichart.empty.EmptyRender;
 import com.parkingwang.hichart.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
@@ -32,15 +33,16 @@ public class LineChartView extends FrameLayout {
 
     private List<Entry> mEntryList;
 
+    private EmptyRender mEmptyRender;
     private YAxis mYAxis;
     private LineFillRender mLineFillRender;
     private LineRender mLineRender;
     private HighlightRender mHighlightRender;
 
-    private float mOffsetLeft;
-    private float mOffsetTop;
-    private float mOffsetRight;
-    private float mOffsetBottom;
+    private float mInsetLeft;
+    private float mInsetTop;
+    private float mInsetRight;
+    private float mInsetBottom;
     private int mWidth;
 
     private int mCurrentHighlightPosition = INVALID_HIGHLIGHT_POSITION;
@@ -101,6 +103,14 @@ public class LineChartView extends FrameLayout {
         return mYAxis;
     }
 
+    public EmptyRender getEmptyRender() {
+        return mEmptyRender;
+    }
+
+    public void setEmptyRender(EmptyRender emptyRender) {
+        mEmptyRender = emptyRender;
+    }
+
     public LineRender getLineRender() {
         return mLineRender;
     }
@@ -123,13 +133,13 @@ public class LineChartView extends FrameLayout {
         notifyDataSetChanged();
     }
 
-    public void setLineChartOffset(float left, float top, float right, float bottom) {
-        mOffsetLeft = left;
-        mOffsetTop = top;
-        mOffsetRight = right;
-        mOffsetBottom = bottom;
+    public void setLineChartInsets(float left, float top, float right, float bottom) {
+        mInsetLeft = left;
+        mInsetTop = top;
+        mInsetRight = right;
+        mInsetBottom = bottom;
         mYAxis.setOffset(left, top, right, bottom);
-        mLineFillRender.setFillContent(mOffsetLeft, mOffsetTop, getWidth() - right, getBottom());
+        mLineFillRender.setFillContent(mInsetLeft, mInsetTop, getWidth() - right, getBottom());
     }
 
     private void notifyDataSetChanged() {
@@ -149,6 +159,7 @@ public class LineChartView extends FrameLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         if (mEntryList.isEmpty()) {
+            drawEmpty(canvas);
             return;
         }
         mYAxis.draw(canvas);
@@ -163,6 +174,15 @@ public class LineChartView extends FrameLayout {
             }
         }
     }
+
+    private void drawEmpty(Canvas canvas) {
+        if (mEmptyRender == null) {
+            return;
+        }
+        mEmptyRender.setRenderArea(0, 0, getWidth(), getHeight());
+        mEmptyRender.draw(canvas);
+    }
+
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -179,14 +199,18 @@ public class LineChartView extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (mEntryList.isEmpty()) {
+            return false;
+        }
+
         List<PointF> points = mLineRender.getPoints();
         if (points.isEmpty()) {
             return true;
         }
 
         int size = points.size();
-        float avg = (mWidth - mOffsetLeft - mOffsetRight) / (size - 1);
-        int position = (int) ((event.getX() - mOffsetLeft + avg / 2) / avg);
+        float avg = (mWidth - mInsetLeft - mInsetRight) / (size - 1);
+        int position = (int) ((event.getX() - mInsetLeft + avg / 2) / avg);
         if (position < 0) {
             position = 0;
         } else if (position >= size) {

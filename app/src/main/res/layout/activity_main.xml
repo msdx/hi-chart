@@ -6,17 +6,40 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.parkingwang.hichart.demo.MainActivity">
-
-    <Button
-        android:id="@+id/update"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onClick"
-        android:text="@string/update"/>
-
-    <com.parkingwang.hichart.demo.LineChartWrapper
-        android:id="@+id/chart"
-        android:background="#1D8FEE"
+    <com.wefika.flowlayout.FlowLayout
         android:layout_width="match_parent"
-        android:layout_height="280dp"/>
+        android:layout_height="wrap_content"
+        android:gravity="start|top">
+        <Button
+            android:id="@+id/update"
+            style="@style/Wrap.OnClick"
+            android:text="@string/update"/>
+        <Button
+            android:id="@+id/clear"
+            style="@style/Wrap.OnClick"
+            android:text="@string/clear"/>
+    </com.wefika.flowlayout.FlowLayout>
+
+    <com.parkingwang.hichart.line.LineChartView
+        android:id="@+id/line_chart"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="#1D8FEE"/>
+    <com.parkingwang.hichart.line.LineChartLabel
+        android:id="@+id/chart_labels"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@android:color/white"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"/>
+
+    <com.wefika.flowlayout.FlowLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="start|top">
+        <CheckBox
+            android:id="@+id/show_empty"
+            style="@style/Wrap"
+            android:text="@string/show_empty"/>
+    </com.wefika.flowlayout.FlowLayout>
 </LinearLayout>
