@@ -9,4 +9,9 @@ build/
 /captures
 .externalNativeBuild
 
+#freeline
+freeline.py
+freeline/
+freeline_project_description.json
+freeline_core/
 

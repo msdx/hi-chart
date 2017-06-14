@@ -1,11 +1,12 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.antfortune.freeline'
 
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.parkingwang.hichart.demo"
-        minSdkVersion 11
+        minSdkVersion 14
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
