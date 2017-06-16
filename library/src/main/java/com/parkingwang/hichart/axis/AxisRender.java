@@ -20,7 +20,7 @@ import java.util.List;
  * @since 2017-06-14 0.1
  */
 public abstract class AxisRender extends BaseRender {
-    protected boolean drawBackground;
+    protected boolean mDrawBackground;
 
     protected final Paint mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
     protected final Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
@@ -44,7 +44,7 @@ public abstract class AxisRender extends BaseRender {
     }
 
     public void setDrawBackground(boolean drawBackground) {
-        this.drawBackground = drawBackground;
+        this.mDrawBackground = drawBackground;
     }
 
     public void attachTo(LineChartView view) {

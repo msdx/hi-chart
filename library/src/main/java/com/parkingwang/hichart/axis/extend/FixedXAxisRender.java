@@ -25,7 +25,7 @@ public class FixedXAxisRender extends XAxisRender {
 
     @Override
     public void draw(Canvas canvas) {
-        if (drawBackground) {
+        if (mDrawBackground) {
             canvas.drawRect(mDrawRect.left, mDrawRect.top, mDrawRect.right, mDrawRect.bottom, mBackgroundPaint);
         }
 

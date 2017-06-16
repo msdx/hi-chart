@@ -33,6 +33,10 @@ public abstract class Axis {
         mDrawCount = drawCount;
     }
 
+    public float getMinValue() {
+        return mMinValue;
+    }
+
     public void setMinValue(float min) {
         internalSetMinValue(min, true);
     }
@@ -40,6 +44,10 @@ public abstract class Axis {
     void internalSetMinValue(float min, boolean isCustom) {
         mMinValue = min;
         mIsCustomMinMax = isCustom;
+    }
+
+    public float getMaxValue() {
+        return mMaxValue;
     }
 
     public void setMaxValue(float max) {
@@ -51,7 +59,18 @@ public abstract class Axis {
         mIsCustomMinMax = isCustom;
     }
 
+    public void calcMinMaxIfNotCustom() {
+        if (mIsCustomMinMax) {
+            return;
+        }
+        calcMinMax();
+    }
+
     public abstract void calcMinMax();
+
+    public float getRange() {
+        return mMaxValue - mMinValue;
+    }
 
     public void attachTo(LineChartView host) {
         mHost = host;

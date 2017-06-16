@@ -17,10 +17,6 @@ public class XAxis extends Axis {
 
     @Override
     public void calcMinMax() {
-        if (mIsCustomMinMax) {
-            return;
-        }
-
         float min = Float.MAX_VALUE;
         List<Entry> entryList = getData();
 

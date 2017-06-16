@@ -42,5 +42,29 @@
             android:id="@+id/custom_x_axis"
             style="@style/Wrap"
             android:text="@string/custom_x_axis"/>
+        <CheckBox
+            android:id="@+id/hide_y_axis"
+            style="@style/Wrap"
+            android:text="@string/hide_y_axis"/>
+        <CheckBox
+            android:id="@+id/hide_y_axis_label"
+            style="@style/Wrap"
+            android:text="@string/hide_y_axis_label"/>
+        <CheckBox
+            android:id="@+id/pretty_y_axis"
+            style="@style/Wrap"
+            android:text="@string/pretty_y_axis"/>
+        <CheckBox
+            android:id="@+id/y_axis_offset"
+            style="@style/Wrap"
+            android:text="@string/y_axis_offset"/>
+        <CheckBox
+            android:id="@+id/y_axis_grid_line"
+            style="@style/Wrap"
+            android:text="@string/y_axis_grid_line"/>
+        <CheckBox
+            android:id="@+id/enable_grid_line"
+            style="@style/Wrap"
+            android:text="@string/disable_grid_line"/>
     </com.wefika.flowlayout.FlowLayout>
 </LinearLayout>

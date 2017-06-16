@@ -13,19 +13,20 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
-import com.parkingwang.hichart.axis.extend.FixedXAxis;
-import com.parkingwang.hichart.axis.extend.FixedXAxisRender;
+import com.parkingwang.hichart.axis.AxisLabelFormatter;
 import com.parkingwang.hichart.axis.XAxis;
 import com.parkingwang.hichart.axis.XAxisRender;
+import com.parkingwang.hichart.axis.YAxis;
+import com.parkingwang.hichart.axis.YAxisRender;
+import com.parkingwang.hichart.axis.extend.FixedXAxis;
+import com.parkingwang.hichart.axis.extend.FixedXAxisRender;
+import com.parkingwang.hichart.axis.extend.PrettyYAxis;
 import com.parkingwang.hichart.data.Entry;
 import com.parkingwang.hichart.divider.Divider;
 import com.parkingwang.hichart.divider.DividersRender;
 import com.parkingwang.hichart.empty.EmptyTextRender;
-import com.parkingwang.hichart.formatter.AxisValueFormatter;
 import com.parkingwang.hichart.line.HighlightRender;
 import com.parkingwang.hichart.line.LineChartView;
-import com.parkingwang.hichart.line.LineRender;
-import com.parkingwang.hichart.line.YAxis;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -65,7 +66,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
         });
 
-        setCheckBoxesListener(R.id.show_empty, R.id.top_divider, R.id.custom_x_axis);
+        setCheckBoxesListener(R.id.show_empty, R.id.top_divider, R.id.custom_x_axis,
+                R.id.hide_y_axis, R.id.hide_y_axis_label, R.id.pretty_y_axis, R.id.y_axis_offset,
+                R.id.y_axis_grid_line, R.id.enable_grid_line);
     }
 
     private void setCheckBoxesListener(@IdRes int... ids) {
@@ -86,14 +89,15 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         xAxisRender.setDrawBackground(true);
 
         LineChartConfig.AxisRightConfig rightConfig = config.axisRightConfig;
-        YAxis right = mLineChart.getYAxis();
-        right.setDrawLabels(rightConfig.drawLabels);
-        right.setTextColor(rightConfig.textColor);
-        right.setLabelCount(rightConfig.labelCount);
-        right.setTextSize(spToPx(rightConfig.textSize));
-        right.setValueFormatter(new AxisValueFormatter() {
+        YAxis yAxis = mLineChart.getYAxis();
+        yAxis.setDrawCount(rightConfig.labelCount);
+        YAxisRender yAxisRender = mLineChart.getYAxisRender();
+        yAxisRender.setDrawLabels(rightConfig.drawLabels);
+        yAxisRender.setTextColor(rightConfig.textColor);
+        yAxisRender.setTextSize(spToPx(rightConfig.textSize));
+        yAxisRender.setLabelFormatter(new AxisLabelFormatter() {
             @Override
-            public String getFormattedValue(float value) {
+            public String format(float value) {
                 if (value >= K_YUAN) {
                     return K_YUAN_FORMAT.format(value / K_YUAN) + "k";
                 } else if (value >= YUAN) {
@@ -106,21 +110,21 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
         });
         if (rightConfig.enableGridDashLine) {
-            right.enableGridDashedLine(dpToPx(rightConfig.dashLineLength), dpToPx(rightConfig.dashLineSpace));
-            right.setGridLineWidth(dpToPx(rightConfig.dashLineWidth));
+            yAxisRender.setGridDashedLine(dpToPx(rightConfig.dashLineLength), dpToPx(rightConfig.dashLineSpace));
+            yAxisRender.setGridLineWidth(dpToPx(rightConfig.dashLineWidth));
         }
-        right.setGridColor(rightConfig.gridColor);
+        yAxisRender.setGridColor(rightConfig.gridColor);
 
-        LineChartConfig.DataSetConfig dataSetConfig = config.dataSetConfig;
-        LineRender lineRender = mLineChart.getLineRender();
-        lineRender.setLineWidth(dpToPx(dataSetConfig.lineWidth));
-        lineRender.setLineColor(dataSetConfig.lineColor);
-        lineRender.setCircleRadius(dpToPx(dataSetConfig.circleRadius));
-        lineRender.setCircleColor(dataSetConfig.circleColor);
-        lineRender.setCircleHoleRadius(dpToPx(dataSetConfig.circleHoleRadius));
-        lineRender.setCircleHoleColor(dataSetConfig.circleHoleColor);
-
-        mLineChart.getLineFillRender().setFillColor(dataSetConfig.fillColor);
+//        LineChartConfig.DataSetConfig dataSetConfig = config.dataSetConfig;
+//        LineRender lineRender = mLineChart.getLineRender();
+//        lineRender.setLineWidth(dpToPx(dataSetConfig.lineWidth));
+//        lineRender.setLineColor(dataSetConfig.lineColor);
+//        lineRender.setCircleRadius(dpToPx(dataSetConfig.circleRadius));
+//        lineRender.setCircleColor(dataSetConfig.circleColor);
+//        lineRender.setCircleHoleRadius(dpToPx(dataSetConfig.circleHoleRadius));
+//        lineRender.setCircleHoleColor(dataSetConfig.circleHoleColor);
+//
+//        mLineChart.getLineFillRender().setFillColor(dataSetConfig.fillColor);
 
         final LineChartConfig.HighlightConfig highlightConfig = config.highlightConfig;
         HighlightRender highlightRender = mLineChart.getHighlightRender();
@@ -135,10 +139,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     public void setLabelFormatter(LabelFormatter labelFormatter) {
         mLabelFormatter = labelFormatter;
-    }
-
-    public void setColumn(int column) {
-        mColumn = column;
     }
 
     public void onClick(View view) {
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         List<Entry> entryList = new ArrayList<>(mColumn);
         for (int i = 0; i < mColumn; i++) {
-            entryList.add(new Entry(i, mRandom.nextInt(100000)));
+            entryList.add(new Entry(i, mRandom.nextInt(10000)));
         }
 
         final float offsetLeft = dpToPx(10);
@@ -201,6 +201,24 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 break;
             case R.id.custom_x_axis:
                 showFixedXAxis(isChecked);
+                break;
+            case R.id.hide_y_axis:
+                hideYAxis(isChecked);
+                break;
+            case R.id.hide_y_axis_label:
+                hideYAxisLabel(isChecked);
+                break;
+            case R.id.pretty_y_axis:
+                showPrettyYAxis(isChecked);
+                break;
+            case R.id.y_axis_offset:
+                offsetYAxis(isChecked);
+                break;
+            case R.id.y_axis_grid_line:
+                drawYAxisGridLine(isChecked);
+                break;
+            case R.id.enable_grid_line:
+                enableGridDashedLine(isChecked);
                 break;
             default:
                 return;
@@ -255,6 +273,41 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         xAxisRender.setTextColor(Color.parseColor("#B6CCDE"));
         xAxisRender.setTextSize(spToPx(10));
         mLineChart.setXAxisRender(xAxisRender);
+    }
+
+    private void hideYAxis(boolean hide) {
+        mLineChart.getYAxisRender().setEnabled(!hide);
+    }
+
+    private void hideYAxisLabel(boolean hide) {
+        YAxisRender render = mLineChart.getYAxisRender();
+        render.setEnabled(true);
+        render.setDrawLabels(!hide);
+    }
+
+    private void showPrettyYAxis(boolean pretty) {
+        YAxis yAxis = pretty ? new PrettyYAxis() : new YAxis();
+        yAxis.setDrawCount(4);
+        mLineChart.setYAxis(yAxis);
+        yAxis.calcMinMaxIfNotCustom();
+        yAxis.setMinValue(0);
+    }
+
+    private void offsetYAxis(boolean offset) {
+        mLineChart.getYAxisRender().setInsetBottom(offset ? dpToPx(10) : 0);
+    }
+
+    private void drawYAxisGridLine(boolean draw) {
+        YAxisRender yAxisRender = mLineChart.getYAxisRender();
+        if (draw) {
+            yAxisRender.setGridDashedLine(dpToPx(3), dpToPx(4));
+        } else {
+            yAxisRender.setGridDashedLine(dpToPx(3), dpToPx(0));
+        }
+    }
+
+    private void enableGridDashedLine(boolean enabled) {
+        mLineChart.getYAxisRender().enabledGridDashedLine(enabled);
     }
 
     private float dpToPx(float dp) {

@@ -69,7 +69,7 @@ public class XAxisRender extends AxisRender {
             return;
         }
 
-        if (drawBackground) {
+        if (mDrawBackground) {
             canvas.drawRect(mDrawRect.left, mDrawRect.top, mDrawRect.right, mDrawRect.bottom, mBackgroundPaint);
         }
 

@@ -22,7 +22,7 @@ import java.util.List;
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-04-18 0.1
  */
-public class YAxis {
+public class YAxisBar {
     private static final DecimalFormat DEFAULT_DECIMAL_FORMAT = new DecimalFormat("###,###,###.##");
 
     private static final int DEFAULT_MIN_VALUE = 0;
@@ -57,7 +57,7 @@ public class YAxis {
     private int mWidth;
     private int mHeight;
 
-    public YAxis() {
+    public YAxisBar() {
         mGridLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         mGridLinePaint.setColor(DEFAULT_GRID_COLOR);
         mGridLinePaint.setStrokeWidth(DEFAULT_GRID_LINE_WIDTH);

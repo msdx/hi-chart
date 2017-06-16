@@ -9,4 +9,10 @@
     <string name="no_data">没有数据</string>
     <string name="top_divider">顶部分割线</string>
     <string name="custom_x_axis">固定底部坐标轴</string>
+    <string name="hide_y_axis">隐藏Y轴</string>
+    <string name="hide_y_axis_label">只隐藏Y轴标签</string>
+    <string name="pretty_y_axis">优化Y轴数字显示</string>
+    <string name="y_axis_offset">Y轴底部向上偏移</string>
+    <string name="y_axis_grid_line">Y轴虚线</string>
+    <string name="disable_grid_line">禁用Y轴虚线</string>
 </resources>

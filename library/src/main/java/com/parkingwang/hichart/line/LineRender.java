@@ -27,7 +27,7 @@ public class LineRender {
     private static final int DEFAULT_CIRCLE_RADIUS = 7;
     private static final int DEFAULT_CIRCLE_HOLE_RADIUS = 3;
 
-    private final YAxis mYAxis;
+    private final YAxisBar mYAxis;
 
     private Bitmap mLineBitmap;
 
@@ -45,7 +45,7 @@ public class LineRender {
     private final Path mClipCanvasPath;
     private List<PointF> mPoints;
 
-    public LineRender(YAxis yAxis) {
+    public LineRender(YAxisBar yAxis) {
         mYAxis = yAxis;
         mLinePath = new Path();
         mClipCanvasPath = new Path();
