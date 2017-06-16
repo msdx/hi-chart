@@ -58,4 +58,8 @@ public abstract class AxisRender extends BaseRender {
     public List<Entry> getLineData() {
         return mHost.getLineData();
     }
+
+    LineChartView getHost() {
+        return mHost;
+    }
 }

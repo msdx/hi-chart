@@ -1,9 +1,11 @@
 /*
  * Copyright (c) 2017. Xi'an iRain IOT Technology service CO., Ltd (ShenZhen). All Rights Reserved.
  */
-package com.parkingwang.hichart.axis;
+package com.parkingwang.hichart.axis.extend;
 
 import android.support.annotation.NonNull;
+
+import com.parkingwang.hichart.axis.XAxis;
 
 import java.util.ArrayList;
 import java.util.List;

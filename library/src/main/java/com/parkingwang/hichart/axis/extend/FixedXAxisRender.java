@@ -1,10 +1,12 @@
 /*
  * Copyright (c) 2017. Xi'an iRain IOT Technology service CO., Ltd (ShenZhen). All Rights Reserved.
  */
-package com.parkingwang.hichart.axis;
+package com.parkingwang.hichart.axis.extend;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
+
+import com.parkingwang.hichart.axis.XAxisRender;
 
 import java.util.List;
 
@@ -17,10 +19,6 @@ import java.util.List;
 public class FixedXAxisRender extends XAxisRender {
     private static final int MIN_SHOW_COUNT = 2;
 
-    public FixedXAxisRender(FixedXAxis axis) {
-        super(axis);
-    }
-
     public float getHeight() {
         return mHeight;
     }
@@ -31,10 +29,10 @@ public class FixedXAxisRender extends XAxisRender {
             canvas.drawRect(mDrawRect.left, mDrawRect.top, mDrawRect.right, mDrawRect.bottom, mBackgroundPaint);
         }
 
-        List<String> labels = ((FixedXAxis) getAxis()).getLabels();
+        List<String> labels = ((FixedXAxis) getXAxis()).getLabels();
 
         final int size = labels.size();
-        final int drawCount = Math.min(getAxis().getDrawCount(), size);
+        final int drawCount = Math.min(getXAxis().getDrawCount(), size);
         if (drawCount < MIN_SHOW_COUNT || size < MIN_SHOW_COUNT) {
             return;
         }

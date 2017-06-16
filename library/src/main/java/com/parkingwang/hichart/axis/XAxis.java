@@ -3,6 +3,10 @@
  */
 package com.parkingwang.hichart.axis;
 
+import com.parkingwang.hichart.data.Entry;
+
+import java.util.List;
+
 /**
  * 横坐标
  *
@@ -11,4 +15,27 @@ package com.parkingwang.hichart.axis;
  */
 public class XAxis extends Axis {
 
+    @Override
+    public void calcMinMax() {
+        if (mIsCustomMinMax) {
+            return;
+        }
+
+        float min = Float.MAX_VALUE;
+        List<Entry> entryList = getData();
+
+        float max = Float.MIN_VALUE;
+        for (Entry entry : entryList) {
+            int x = (int) entry.x;
+            if (x > max) {
+                max = x;
+            }
+            if (x < min) {
+                min = x;
+            }
+        }
+
+        mMinValue = min;
+        mMaxValue = max;
+    }
 }

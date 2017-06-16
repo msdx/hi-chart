@@ -3,17 +3,27 @@
  */
 package com.parkingwang.hichart.axis;
 
+import com.parkingwang.hichart.data.Entry;
+import com.parkingwang.hichart.line.LineChartView;
+
+import java.util.List;
+
 /**
  * 坐标
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-14 0.1
  */
-public class Axis {
+public abstract class Axis {
 
     private boolean mCustomLabel;
     private int mDrawCount;
 
+    protected boolean mIsCustomMinMax;
+    protected float mMinValue;
+    protected float mMaxValue;
+
+    private LineChartView mHost;
 
     public int getDrawCount() {
         return mDrawCount;
@@ -21,5 +31,33 @@ public class Axis {
 
     public void setDrawCount(int drawCount) {
         mDrawCount = drawCount;
+    }
+
+    public void setMinValue(float min) {
+        internalSetMinValue(min, true);
+    }
+
+    void internalSetMinValue(float min, boolean isCustom) {
+        mMinValue = min;
+        mIsCustomMinMax = isCustom;
+    }
+
+    public void setMaxValue(float max) {
+        internalSetMaxValue(max, true);
+    }
+
+    void internalSetMaxValue(float max, boolean isCustom) {
+        mMaxValue = max;
+        mIsCustomMinMax = isCustom;
+    }
+
+    public abstract void calcMinMax();
+
+    public void attachTo(LineChartView host) {
+        mHost = host;
+    }
+
+    protected List<Entry> getData() {
+        return mHost.getLineData();
     }
 }

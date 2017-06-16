@@ -13,8 +13,8 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
-import com.parkingwang.hichart.axis.FixedXAxis;
-import com.parkingwang.hichart.axis.FixedXAxisRender;
+import com.parkingwang.hichart.axis.extend.FixedXAxis;
+import com.parkingwang.hichart.axis.extend.FixedXAxisRender;
 import com.parkingwang.hichart.axis.XAxis;
 import com.parkingwang.hichart.axis.XAxisRender;
 import com.parkingwang.hichart.data.Entry;
@@ -239,13 +239,13 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             FixedXAxis axis = new FixedXAxis();
             axis.setDrawCount(7);
             mLineChart.setXAxis(axis);
-            xAxisRender = new FixedXAxisRender(axis);
+            xAxisRender = new FixedXAxisRender();
             axis.setLabels(generateLabels());
         } else {
             XAxis axis = new XAxis();
             axis.setDrawCount(7);
             mLineChart.setXAxis(axis);
-            xAxisRender = new XAxisRender(axis);
+            xAxisRender = new XAxisRender();
         }
         xAxisRender.setHeight(dpToPx(30));
         xAxisRender.setPaddingLeft(dpToPx(10));

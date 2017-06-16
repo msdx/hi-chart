@@ -81,9 +81,8 @@ public class LineChartView extends FrameLayout {
         mLineFillRender = new LineFillRender();
         mLineRender = new LineRender(mYAxis);
         mHighlightRender = new HighlightRender();
-        mXAxis = new XAxis();
-        mXAxisRender = new XAxisRender(mXAxis);
-        mXAxisRender.attachTo(this);
+        setXAxis(new XAxis());
+        setXAxisRender(new XAxisRender());
 
         mEntryList = new ArrayList<>();
         mAnimator = ValueAnimator.ofFloat(0, DEFAULT_DRAW_PERCENT);
@@ -159,6 +158,7 @@ public class LineChartView extends FrameLayout {
 
     public void setXAxis(XAxis XAxis) {
         mXAxis = XAxis;
+        mXAxis.attachTo(this);
     }
 
     public XAxisRender getXAxisRender() {

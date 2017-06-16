@@ -33,16 +33,6 @@ public class XAxisRender extends AxisRender {
     private float mPaddingLeft;
     private float mPaddingRight;
 
-    private final Axis mAxis;
-
-    public XAxisRender(Axis axis) {
-        mAxis = axis;
-    }
-
-    public Axis getAxis() {
-        return mAxis;
-    }
-
     public float getHeight() {
         return !getLineData().isEmpty() ? mHeight : 0;
     }
@@ -84,7 +74,7 @@ public class XAxisRender extends AxisRender {
         }
 
         final int size = data.size();
-        final int drawCount = Math.min(mAxis.getDrawCount(), size);
+        final int drawCount = Math.min(getXAxis().getDrawCount(), size);
         if (drawCount < MIN_SHOW_COUNT || size < MIN_SHOW_COUNT) {
             return;
         }
@@ -118,5 +108,9 @@ public class XAxisRender extends AxisRender {
 
             canvas.drawText(label, textX, textY, mTextPaint);
         }
+    }
+
+    public XAxis getXAxis() {
+        return getHost().getXAxis();
     }
 }
