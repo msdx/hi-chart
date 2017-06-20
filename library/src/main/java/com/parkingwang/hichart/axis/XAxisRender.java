@@ -5,8 +5,9 @@ package com.parkingwang.hichart.axis;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
+import android.util.Log;
 
-import com.parkingwang.hichart.data.Entry;
+import com.parkingwang.hichart.data.Line;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public class XAxisRender extends AxisRender {
     private static final int MIN_SHOW_COUNT = 2;
-    private static final DecimalFormat LABEL_FORMATTER = new DecimalFormat("###,###,###.##");
+    private static final DecimalFormat LABEL_FORMATTER = new DecimalFormat("###,###,##0.##");
 
     protected AxisLabelFormatter mAxisLabelFormatter = new AxisLabelFormatter() {
         @Override
@@ -63,7 +64,7 @@ public class XAxisRender extends AxisRender {
 
     @Override
     public void draw(Canvas canvas) {
-        List<Entry> data = getLineData();
+        List<Line> data = getLineData();
 
         if (data.isEmpty()) {
             return;
@@ -73,9 +74,8 @@ public class XAxisRender extends AxisRender {
             canvas.drawRect(mDrawRect.left, mDrawRect.top, mDrawRect.right, mDrawRect.bottom, mBackgroundPaint);
         }
 
-        final int size = data.size();
-        final int drawCount = Math.min(getXAxis().getDrawCount(), size);
-        if (drawCount < MIN_SHOW_COUNT || size < MIN_SHOW_COUNT) {
+        final int drawCount = getXAxis().getDrawCount();
+        if (drawCount < MIN_SHOW_COUNT) {
             return;
         }
 
@@ -85,21 +85,26 @@ public class XAxisRender extends AxisRender {
         final float end = Math.min(dataRect.right, mDrawRect.right - mPaddingRight);
 
         final float textY = mHeight / 2 - (mTextPaint.descent() + mTextPaint.ascent()) / 2;
-        final float interval = (size - 1.0f) / (drawCount - 1);
         final float drawWidth = end - start;
+        final float distance = drawWidth / (drawCount - 1);
 
-        for (float nearlyIndex = 0; nearlyIndex < size; nearlyIndex += interval) {
-            final int labelPosition = (int) (nearlyIndex + 0.5f);
-            final String label = mAxisLabelFormatter.format(data.get(labelPosition).x);
+        XAxis xAxis = getXAxis();
+        final float avg = xAxis.getRange() / (drawCount - 1);
+        final float min = xAxis.getMinValue();
+        float value = min;
+
+        for (int i = 0; i < drawCount; i++) {
+            final String label = mAxisLabelFormatter.format(value);
+            Log.e("xxxx", value + "..." + label);
             final float halfTextWidth = mTextPaint.measureText(label) / 2;
 
-            float textX = start + drawWidth * labelPosition / (size - 1);
-            if (labelPosition == 0) {
+            float textX = start + distance * i;
+            if (i == 0) {
                 float allowTextX = mPaddingLeft + halfTextWidth;
                 if (textX < allowTextX) {
                     textX = allowTextX;
                 }
-            } else if (labelPosition == size - 1) {
+            } else if (i == drawCount - 1) {
                 float allowTextX = mDrawRect.right - mPaddingRight - halfTextWidth;
                 if (textX > allowTextX) {
                     textX = allowTextX;
@@ -107,6 +112,8 @@ public class XAxisRender extends AxisRender {
             }
 
             canvas.drawText(label, textX, textY, mTextPaint);
+
+            value += avg;
         }
     }
 

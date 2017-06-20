@@ -3,7 +3,7 @@
  */
 package com.parkingwang.hichart.axis;
 
-import com.parkingwang.hichart.data.Entry;
+import com.parkingwang.hichart.data.Line;
 import com.parkingwang.hichart.line.LineChartView;
 
 import java.util.List;
@@ -76,7 +76,7 @@ public abstract class Axis {
         mHost = host;
     }
 
-    protected List<Entry> getData() {
+    protected List<Line> getData() {
         return mHost.getLineData();
     }
 }

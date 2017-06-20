@@ -4,6 +4,7 @@
 package com.parkingwang.hichart.util;
 
 import android.content.res.Resources;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
 /**
@@ -14,7 +15,9 @@ import android.util.TypedValue;
  */
 public class DimenUtil {
 
+    private static final DisplayMetrics DISPLAY_METRICS = Resources.getSystem().getDisplayMetrics();
+
     public static float dpToPx(float dp) {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, Resources.getSystem().getDisplayMetrics());
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, DISPLAY_METRICS);
     }
 }

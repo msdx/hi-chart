@@ -4,6 +4,7 @@
 package com.parkingwang.hichart.axis;
 
 import com.parkingwang.hichart.data.Entry;
+import com.parkingwang.hichart.data.Line;
 
 import java.util.List;
 
@@ -17,20 +18,21 @@ public class XAxis extends Axis {
 
     @Override
     public void calcMinMax() {
+        List<Line> lines = getData();
         float min = Float.MAX_VALUE;
-        List<Entry> entryList = getData();
-
         float max = Float.MIN_VALUE;
-        for (Entry entry : entryList) {
-            int x = (int) entry.x;
-            if (x > max) {
-                max = x;
+        for (Line line : lines) {
+            for (Entry entry : line) {
+                int x = (int) entry.x;
+                if (x > max) {
+                    max = x;
+                }
+                if (x < min) {
+                    min = x;
+                }
             }
-            if (x < min) {
-                min = x;
-            }
-        }
 
+        }
         mMinValue = min;
         mMaxValue = max;
     }

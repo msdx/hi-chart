@@ -22,6 +22,8 @@ import com.parkingwang.hichart.axis.extend.FixedXAxis;
 import com.parkingwang.hichart.axis.extend.FixedXAxisRender;
 import com.parkingwang.hichart.axis.extend.PrettyYAxis;
 import com.parkingwang.hichart.data.Entry;
+import com.parkingwang.hichart.data.Line;
+import com.parkingwang.hichart.data.LineStyle;
 import com.parkingwang.hichart.divider.Divider;
 import com.parkingwang.hichart.divider.DividersRender;
 import com.parkingwang.hichart.empty.EmptyTextRender;
@@ -133,6 +135,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         highlightRender.setHighlightLineColor(highlightConfig.lineColor);
         highlightRender.setHighlightLineWidth(dpToPx(highlightConfig.lineWidth));
 
+        final float offsetLeft = dpToPx(10);
+        final float offsetRight = dpToPx(25);
+        final float offsetTop = dpToPx(40);
+        final float offsetBottom = dpToPx(10);
+        mLineChart.setLineChartInsets(offsetLeft, offsetTop, offsetRight, offsetBottom);
+
         mLineChart.setAnimatorTime(ANIMATOR_TIME);
         mLineChart.setAnimatorStartDelay(ANIMATOR_DELAY);
     }
@@ -150,6 +158,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             case R.id.clear:
                 clearData();
                 break;
+            case R.id.add_line:
+                addLine();
+                break;
+            case R.id.remove_line:
+                removeLine();
+                break;
         }
     }
 
@@ -164,17 +178,34 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             ((FixedXAxis) xAxis).setLabels(generateLabels());
         }
 
-        List<Entry> entryList = new ArrayList<>(mColumn);
+        Line line = new Line();
         for (int i = 0; i < mColumn; i++) {
-            entryList.add(new Entry(i, mRandom.nextInt(10000)));
+            line.add(new Entry(i, mRandom.nextInt(10000)));
         }
 
-        final float offsetLeft = dpToPx(10);
-        final float offsetRight = dpToPx(25);
-        final float offsetBottom = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
-        mLineChart.setLineChartInsets(offsetLeft, mLineChart.getHeight() / 7, offsetRight, offsetBottom);
+        List<Line> lines = new ArrayList<>();
+        lines.add(line);
+        mLineChart.setLineData(lines);
+    }
 
-        mLineChart.setLineData(entryList);
+    private void addLine() {
+         Line line = new Line();
+        for (int i = 0; i < mColumn; i++) {
+            line.add(new Entry(i, mRandom.nextInt(10000)));
+        }
+        LineStyle style = line.getStyle();
+        int color = Color.rgb(mRandom.nextInt(255), mRandom.nextInt(255), mRandom.nextInt(255));
+        style.setLineColor(color);
+        style.setCircleColor(color);
+        mLineChart.addLine(line);
+    }
+
+    private void removeLine() {
+        List<Line> lines = mLineChart.getLineData();
+        if (!lines.isEmpty()) {
+            lines.remove(lines.size() - 1);
+            mLineChart.notifyDataSetChanged();
+        }
     }
 
     @NonNull
@@ -263,6 +294,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             XAxis axis = new XAxis();
             axis.setDrawCount(7);
             mLineChart.setXAxis(axis);
+            axis.calcMinMaxIfNotCustom();
             xAxisRender = new XAxisRender();
         }
         xAxisRender.setHeight(dpToPx(30));

@@ -5,6 +5,8 @@
     <string name="app_name">HiChart</string>
     <string name="random_data">随机数据</string>
     <string name="clear">清空数据</string>
+    <string name="add_line">加条线</string>
+    <string name="remove_line">减条线</string>
     <string name="show_empty">显示没有数据</string>
     <string name="no_data">没有数据</string>
     <string name="top_divider">顶部分割线</string>

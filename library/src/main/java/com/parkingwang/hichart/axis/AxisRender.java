@@ -7,7 +7,7 @@ import android.graphics.Paint;
 import android.support.annotation.ColorInt;
 
 import com.parkingwang.hichart.data.DataRender;
-import com.parkingwang.hichart.data.Entry;
+import com.parkingwang.hichart.data.Line;
 import com.parkingwang.hichart.line.LineChartView;
 import com.parkingwang.hichart.render.BaseRender;
 
@@ -55,7 +55,7 @@ public abstract class AxisRender extends BaseRender {
         return mHost.getDataRender();
     }
 
-    public List<Entry> getLineData() {
+    public List<Line> getLineData() {
         return mHost.getLineData();
     }
 

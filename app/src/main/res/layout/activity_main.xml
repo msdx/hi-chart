@@ -18,6 +18,14 @@
             android:id="@+id/clear"
             style="@style/Wrap.OnClick"
             android:text="@string/clear"/>
+        <Button
+            android:id="@+id/add_line"
+            style="@style/Wrap.OnClick"
+            android:text="@string/add_line"/>
+        <Button
+            android:id="@+id/remove_line"
+            style="@style/Wrap.OnClick"
+            android:text="@string/remove_line"/>
     </com.wefika.flowlayout.FlowLayout>
 
     <com.parkingwang.hichart.line.LineChartView

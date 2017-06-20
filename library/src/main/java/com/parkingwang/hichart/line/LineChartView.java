@@ -19,12 +19,14 @@ import com.parkingwang.hichart.axis.XAxisRender;
 import com.parkingwang.hichart.axis.YAxis;
 import com.parkingwang.hichart.axis.YAxisRender;
 import com.parkingwang.hichart.data.DataRender;
-import com.parkingwang.hichart.data.Entry;
+import com.parkingwang.hichart.data.Line;
+import com.parkingwang.hichart.data.PointValue;
 import com.parkingwang.hichart.divider.DividersRender;
 import com.parkingwang.hichart.empty.EmptyRender;
 import com.parkingwang.hichart.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -35,15 +37,12 @@ public class LineChartView extends FrameLayout {
 
     private static final float DEFAULT_DRAW_PERCENT = 1f;
     private static final int DEFAULT_ANIMATOR_TIME = 1000;
-    private static final int INVALID_HIGHLIGHT_POSITION = -1;
 
-    private List<Entry> mEntryList;
-
+    private List<Line> mLines = new ArrayList<>();
     private DataRender mDataRender;
     private DividersRender mDividersRender;
     private EmptyRender mEmptyRender;
     private LineFillRender mLineFillRender;
-//    private LineRender mLineRender;
     private HighlightRender mHighlightRender;
     private XAxis mXAxis;
     private XAxisRender mXAxisRender;
@@ -56,7 +55,7 @@ public class LineChartView extends FrameLayout {
     private float mInsetBottom;
     private int mWidth;
 
-    private int mCurrentHighlightPosition = INVALID_HIGHLIGHT_POSITION;
+    private PointValue mPointValue;
     private OnChartValueSelectedListener mOnChartValueSelectedListener;
 
     private float mDrawPercent = DEFAULT_DRAW_PERCENT;
@@ -78,11 +77,10 @@ public class LineChartView extends FrameLayout {
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         setFilterTouchesWhenObscured(false);
 
-        mEntryList = new ArrayList<>();
         mDataRender = new DataRender();
+        mDataRender.attachTo(this);
         mDividersRender = new DividersRender();
         mLineFillRender = new LineFillRender();
-//        mLineRender = new LineRender(mYAxis);
         mHighlightRender = new HighlightRender();
         setXAxis(new XAxis());
         setXAxisRender(new XAxisRender());
@@ -139,10 +137,6 @@ public class LineChartView extends FrameLayout {
     public void setEmptyRender(EmptyRender emptyRender) {
         mEmptyRender = emptyRender;
     }
-//
-//    public LineRender getLineRender() {
-//        return mLineRender;
-//    }
 
     public LineFillRender getLineFillRender() {
         return mLineFillRender;
@@ -188,14 +182,39 @@ public class LineChartView extends FrameLayout {
         mYAxisRender.attachTo(this);
     }
 
-    public List<Entry> getLineData() {
-        return mEntryList;
+    public List<Line> getLineData() {
+        return mLines;
     }
 
-    public void setLineData(List<Entry> entries) {
-        mEntryList = entries == null ? new ArrayList<Entry>() : entries;
-        mCurrentHighlightPosition = INVALID_HIGHLIGHT_POSITION;
+    public void setLineData(List<Line> lines) {
+        mLines = lines == null ? new ArrayList<Line>() : lines;
         notifyDataSetChanged();
+    }
+
+    public void addLine(Line line) {
+        mLines.add(line);
+        notifyDataSetChanged();
+    }
+
+    public void removeLine(Line line) {
+        mLines.remove(line);
+        notifyDataSetChanged();
+    }
+
+    public void removeLine(Object tag) {
+        if (tag != null) {
+            boolean removed = false;
+            Iterator<Line> iterator = mLines.iterator();
+            while (iterator.hasNext()) {
+                if (tag.equals(iterator.next().getTag())) {
+                    iterator.remove();
+                    removed = true;
+                }
+            }
+            if (removed) {
+                notifyDataSetChanged();
+            }
+        }
     }
 
     public void setLineChartInsets(float left, float top, float right, float bottom) {
@@ -205,16 +224,15 @@ public class LineChartView extends FrameLayout {
         mInsetBottom = bottom;
     }
 
-    private void notifyDataSetChanged() {
+    public void notifyDataSetChanged() {
+        mPointValue = null;
         mDataRender.setDrawRect(mInsetLeft, 0, getRight() - mInsetRight, getHeight() - mXAxisRender.getHeight());
         RectF rectF = mDataRender.getDrawRect();
         mLineFillRender.setFillContent(rectF.left, rectF.top, rectF.right, rectF.bottom);
-//        mYAxis.setOffset(rectF.left, rectF.top + mInsetTop, getWidth() - rectF.right, getHeight() - rectF.bottom + mInsetBottom);
 
+        mXAxis.calcMinMax();
         mYAxis.calcMinMax();
-//        mLineRender.update(mEntryList);
-//        mLineFillRender.updateFillArea(mLineRender.getLinePath());
-        if (mAnimated && !mEntryList.isEmpty()) {
+        if (mAnimated && !getLineData().isEmpty()) {
             mDrawPercent = 0;
             mAnimator.cancel();
             mAnimator.start();
@@ -230,15 +248,14 @@ public class LineChartView extends FrameLayout {
                 getRight() - Math.max(mInsetRight, mYAxisRender.getWidth()), getHeight() - mXAxisRender.getHeight());
         RectF rectF = mDataRender.getDrawRect();
         mLineFillRender.setFillContent(rectF.left, rectF.top, rectF.right, rectF.bottom);
-//        mYAxis.setOffset(rectF.left, rectF.top + mInsetTop, getWidth() - rectF.right, getHeight() - rectF.bottom + mInsetBottom);
         drawDividers(canvas);
-        if (mEntryList.isEmpty()) {
+        if (getLineData().isEmpty()) {
             drawEmpty(canvas);
         } else {
+            mDataRender.draw(canvas);
             if (mDrawPercent == DEFAULT_DRAW_PERCENT) {
                 mLineFillRender.draw(canvas);
             }
-//            mLineRender.draw(canvas, mDrawPercent);
 //            if (mDrawPercent == DEFAULT_DRAW_PERCENT && mCurrentHighlightPosition >= 0) {
 //                List<PointF> pointList = mLineRender.getPoints();
 //                if (pointList.size() > mCurrentHighlightPosition) {
@@ -246,7 +263,6 @@ public class LineChartView extends FrameLayout {
 //                }
 //            }
         }
-//        mYAxis.draw(canvas);
         drawXAxis(canvas);
         drawYAxis(canvas);
     }
@@ -285,17 +301,17 @@ public class LineChartView extends FrameLayout {
         super.onLayout(changed, left, top, right, bottom);
         if (changed) {
             mWidth = right - left;
-//            mYAxis.setSize(mWidth, bottom - top);
         }
     }
 
-    public void highlightValue(int position) {
-        onHighlightValue(position);
+    public void highlightValue(int lineIndex, int pointIndex) {
+        // TODO: 17-6-20 calc point value
+//        onHighlightValue(lineIndex, pointIndex);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mEntryList.isEmpty()) {
+        if (getLineData().isEmpty()) {
             return false;
         }
 //
@@ -319,13 +335,13 @@ public class LineChartView extends FrameLayout {
         return true;
     }
 
-    private void onHighlightValue(int position) {
-        mCurrentHighlightPosition = position;
+    private void onHighlightValue(int lineIndex, int pointIndex, PointValue pointValue) {
+        mPointValue = pointValue;
         if (mDrawPercent == DEFAULT_DRAW_PERCENT) {
             invalidate();
         }
         if (mOnChartValueSelectedListener != null) {
-            mOnChartValueSelectedListener.onValueSelected(mEntryList.get(position));
+            mOnChartValueSelectedListener.onValueSelected(this, lineIndex, pointIndex, pointValue);
         }
     }
 

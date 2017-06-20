@@ -93,6 +93,10 @@ public class YAxisRender extends AxisRender {
         mGridLinePaint.setColor(gridColor);
     }
 
+    public float getInsetBottom() {
+        return mInsetBottom;
+    }
+
     public void setInsetBottom(float insetBottom) {
         mInsetBottom = insetBottom;
     }

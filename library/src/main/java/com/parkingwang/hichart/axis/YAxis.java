@@ -4,6 +4,7 @@
 package com.parkingwang.hichart.axis;
 
 import com.parkingwang.hichart.data.Entry;
+import com.parkingwang.hichart.data.Line;
 
 import java.util.List;
 
@@ -34,16 +35,17 @@ public class YAxis extends Axis {
     @Override
     public void calcMinMax() {
         float min = Float.MAX_VALUE;
-        List<Entry> entryList = getData();
-
         float max = Float.MIN_VALUE;
-        for (Entry entry : entryList) {
-            int y = (int) entry.y;
-            if (y > max) {
-                max = y;
-            }
-            if (y < min) {
-                min = y;
+        List<Line> lines = getData();
+        for (Line line : lines) {
+            for (Entry entry : line) {
+                int y = (int) entry.y;
+                if (y > max) {
+                    max = y;
+                }
+                if (y < min) {
+                    min = y;
+                }
             }
         }
 

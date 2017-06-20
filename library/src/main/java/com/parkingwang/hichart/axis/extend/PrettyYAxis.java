@@ -5,6 +5,7 @@ package com.parkingwang.hichart.axis.extend;
 
 import com.parkingwang.hichart.axis.YAxis;
 import com.parkingwang.hichart.data.Entry;
+import com.parkingwang.hichart.data.Line;
 
 import java.util.List;
 
@@ -19,12 +20,14 @@ public class PrettyYAxis extends YAxis {
     @Override
     public void calcMinMax() {
         mMinValue = 0;
-
-        List<Entry> entryList = getData();
         int max = Integer.MIN_VALUE;
-        for (Entry entry : entryList) {
-            if (entry.y > max) {
-                max = (int) entry.y;
+
+        List<Line> lines = getData();
+        for (Line line : lines) {
+            for (Entry entry : line) {
+                if (entry.y > max) {
+                    max = (int) entry.y;
+                }
             }
         }
         boolean divide = false;
