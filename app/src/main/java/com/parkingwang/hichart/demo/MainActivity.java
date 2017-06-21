@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         mLineChart.setAnimatorTime(ANIMATOR_TIME);
         mLineChart.setAnimatorStartDelay(ANIMATOR_DELAY);
+        mLineChart.setAnimated(true);
     }
 
     public void setLabelFormatter(LabelFormatter labelFormatter) {

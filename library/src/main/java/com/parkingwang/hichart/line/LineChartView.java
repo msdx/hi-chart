@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class LineChartView extends FrameLayout {
 
-    private static final float DEFAULT_DRAW_PERCENT = 1f;
+    private static final float VALUE_COMPLETE = 1f;
     private static final int DEFAULT_ANIMATOR_TIME = 1000;
 
     private List<Line> mLines = new ArrayList<>();
@@ -58,7 +58,7 @@ public class LineChartView extends FrameLayout {
     private PointValue mPointValue;
     private OnChartValueSelectedListener mOnChartValueSelectedListener;
 
-    private float mDrawPercent = DEFAULT_DRAW_PERCENT;
+    private float mDrawPercent = VALUE_COMPLETE;
     private ValueAnimator mAnimator;
     private boolean mAnimated = false;
 
@@ -87,7 +87,7 @@ public class LineChartView extends FrameLayout {
         setYAxis(new YAxis());
         setYAxisRender(new YAxisRender());
 
-        mAnimator = ValueAnimator.ofFloat(0, DEFAULT_DRAW_PERCENT);
+        mAnimator = ValueAnimator.ofFloat(0, VALUE_COMPLETE);
         mAnimator.setDuration(DEFAULT_ANIMATOR_TIME);
         mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -226,10 +226,6 @@ public class LineChartView extends FrameLayout {
 
     public void notifyDataSetChanged() {
         mPointValue = null;
-        mDataRender.setDrawRect(mInsetLeft, 0, getRight() - mInsetRight, getHeight() - mXAxisRender.getHeight());
-        RectF rectF = mDataRender.getDrawRect();
-        mLineFillRender.setFillContent(rectF.left, rectF.top, rectF.right, rectF.bottom);
-
         mXAxis.calcMinMax();
         mYAxis.calcMinMax();
         if (mAnimated && !getLineData().isEmpty()) {
@@ -237,28 +233,40 @@ public class LineChartView extends FrameLayout {
             mAnimator.cancel();
             mAnimator.start();
         } else {
-            mDrawPercent = DEFAULT_DRAW_PERCENT;
+            mDrawPercent = VALUE_COMPLETE;
             invalidate();
+        }
+    }
+
+    private void updateRendersDrawRect() {
+        mDataRender.setDrawRect(mInsetLeft, 0,
+                getRight() - Math.max(mInsetRight, mYAxisRender.getWidth()), getHeight() - mXAxisRender.getHeight());
+        RectF rectF = mDataRender.getDrawRect();
+        mLineFillRender.setFillContent(rectF.left, rectF.top, rectF.right, rectF.bottom);
+        mDividersRender.setDrawRect(0, 0, getWidth(), getHeight());
+        mXAxisRender.setDrawRect(0, 0, getWidth(), getHeight() - mDataRender.getDrawRect().bottom);
+        RectF dataRect = getDataRender().getDrawRect();
+        mYAxisRender.setDrawRect(dataRect.left, dataRect.top + mInsetTop, getWidth(), dataRect.bottom);
+        if (mEmptyRender != null) {
+            mEmptyRender.setDrawRect(rectF.left, rectF.top, rectF.right, rectF.bottom);
         }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        mDataRender.setDrawRect(mInsetLeft, 0,
-                getRight() - Math.max(mInsetRight, mYAxisRender.getWidth()), getHeight() - mXAxisRender.getHeight());
-        RectF rectF = mDataRender.getDrawRect();
-        mLineFillRender.setFillContent(rectF.left, rectF.top, rectF.right, rectF.bottom);
-        drawDividers(canvas);
+        updateRendersDrawRect();
+        mDividersRender.draw(canvas);
         drawXAxis(canvas);
-        drawYAxis(canvas);
+        mYAxisRender.draw(canvas);
         if (getLineData().isEmpty()) {
             drawEmpty(canvas);
         } else {
+            prepareLinePoints();
             mDataRender.draw(canvas);
-            if (mDrawPercent == DEFAULT_DRAW_PERCENT) {
+            if (mDrawPercent == VALUE_COMPLETE) {
                 mLineFillRender.draw(canvas);
             }
-//            if (mDrawPercent == DEFAULT_DRAW_PERCENT && mCurrentHighlightPosition >= 0) {
+//            if (mDrawPercent == VALUE_COMPLETE && mCurrentHighlightPosition >= 0) {
 //                List<PointF> pointList = mLineRender.getPoints();
 //                if (pointList.size() > mCurrentHighlightPosition) {
 //                    mHighlightRender.draw(canvas, pointList.get(mCurrentHighlightPosition), getBottom());
@@ -267,31 +275,41 @@ public class LineChartView extends FrameLayout {
         }
     }
 
-    private void drawDividers(Canvas canvas) {
-        mDividersRender.setDrawRect(0, 0, getWidth(), getHeight());
-        mDividersRender.draw(canvas);
+    private void prepareLinePoints() {
+        if (mXAxis.getRange() == 0 || mYAxis.getRange() == 0) {
+            return;
+        }
+        RectF yAxisDrawRect = mYAxisRender.getDrawRect();
+        RectF drawRect = mDataRender.getDrawRect();
+        float left = drawRect.left;
+        float right = drawRect.right;
+        float top = yAxisDrawRect.top;
+        float bottom = yAxisDrawRect.bottom - mYAxisRender.getInsetBottom();
+
+        float minX = mXAxis.getMinValue();
+        float maxX = mXAxis.getMaxValue();
+        float minY = mYAxis.getMinValue();
+        float maxY = mYAxis.getMaxValue();
+
+        float ratioX = (right - left) / (maxX - minX);
+        float ratioY = (bottom - top) / (maxY - minY);
+
+        for (Line line : getLineData()) {
+            line.updatePointValues(minX, minY, left, bottom, ratioX, ratioY);
+        }
     }
 
     private void drawXAxis(Canvas canvas) {
-        mXAxisRender.setDrawRect(0, 0, getWidth(), getHeight() - mDataRender.getDrawRect().bottom);
         canvas.save();
         canvas.translate(0, mDataRender.getDrawRect().bottom);
         mXAxisRender.draw(canvas);
         canvas.restore();
     }
 
-    private void drawYAxis(Canvas canvas) {
-        RectF dataRect = getDataRender().getDrawRect();
-        mYAxisRender.setDrawRect(dataRect.left, dataRect.top + mInsetTop, getWidth(), dataRect.bottom);
-        mYAxisRender.draw(canvas);
-    }
-
     private void drawEmpty(Canvas canvas) {
         if (mEmptyRender == null) {
             return;
         }
-        RectF rect = mDataRender.getDrawRect();
-        mEmptyRender.setDrawRect(rect.left, rect.top, rect.right, rect.bottom);
         mEmptyRender.draw(canvas);
     }
 
@@ -337,7 +355,7 @@ public class LineChartView extends FrameLayout {
 
     private void onHighlightValue(int lineIndex, int pointIndex, PointValue pointValue) {
         mPointValue = pointValue;
-        if (mDrawPercent == DEFAULT_DRAW_PERCENT) {
+        if (mDrawPercent == VALUE_COMPLETE) {
             invalidate();
         }
         if (mOnChartValueSelectedListener != null) {

@@ -26,18 +26,14 @@ public class Line implements Iterable<Entry> {
     private final List<Entry> mEntryList = new ArrayList<>();
     private List<PointValue> mPoints = new ArrayList<>();
 
-    private boolean mNeedUpdateValues;
-
     private Object mTag;
 
     public void add(Entry entry) {
         mEntryList.add(entry);
-        mNeedUpdateValues = true;
     }
 
     public void clear() {
         mEntryList.clear();
-        mNeedUpdateValues = true;
     }
 
     public Entry get(int index) {
@@ -52,14 +48,13 @@ public class Line implements Iterable<Entry> {
         return mStyle;
     }
 
-    public boolean isNeedUpdateValues() {
-        return mNeedUpdateValues;
-    }
-
-    void updatePointValues(List<PointValue> values) {
-        if (values != null) {
-            mPoints = values;
+    public void updatePointValues(float minX, float minY, float left, float bottom, float ratioX, float ratioY) {
+        List<PointValue> points = new ArrayList<>(this.size());
+        for (Entry entry : mEntryList) {
+            points.add(new PointValue(left + (entry.x - minX) * ratioX,
+                    bottom - (entry.y - minY) * ratioY));
         }
+        this.mPoints = points;
     }
 
     List<PointValue> getPointValues() {

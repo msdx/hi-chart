@@ -5,15 +5,10 @@ package com.parkingwang.hichart.data;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.RectF;
 
-import com.parkingwang.hichart.axis.XAxis;
-import com.parkingwang.hichart.axis.YAxis;
-import com.parkingwang.hichart.axis.YAxisRender;
 import com.parkingwang.hichart.line.LineChartView;
 import com.parkingwang.hichart.render.BaseRender;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,8 +37,6 @@ public class DataRender extends BaseRender {
             return;
         }
 
-        prepareLinePoints(lines);
-
         for (Line line : lines) {
             final LineStyle lineStyle = line.getStyle();
             mLinePaint.setStrokeWidth(lineStyle.getLineWidth());
@@ -71,36 +64,6 @@ public class DataRender extends BaseRender {
     private void drawPoint(Canvas canvas, float circleRadius, float circleHoleRadius, PointValue previous) {
         canvas.drawCircle(previous.x, previous.y, circleRadius, mCirclePaint);
         canvas.drawCircle(previous.x, previous.y, circleHoleRadius, mCircleHolePaint);
-    }
-
-    private void prepareLinePoints(List<Line> lines) {
-        YAxisRender yAxisRender = mHost.getYAxisRender();
-        RectF yAxisDrawRect = yAxisRender.getDrawRect();
-        float left = mDrawRect.left;
-        float right = mDrawRect.right;
-        float top = yAxisDrawRect.top;
-        float bottom = yAxisDrawRect.bottom - yAxisRender.getInsetBottom();
-
-        XAxis xAxis = mHost.getXAxis();
-        float minX = xAxis.getMinValue();
-        float maxX = xAxis.getMaxValue();
-        YAxis yAxis = mHost.getYAxis();
-        float minY = yAxis.getMinValue();
-        float maxY = yAxis.getMaxValue();
-
-        float ratioX = (right - left) / (maxX - minX);
-        float ratioY = (bottom - top) / (maxY - minY);
-
-        for (Line line : lines) {
-            if (line.isNeedUpdateValues()) {
-                List<PointValue> points = new ArrayList<>(line.size());
-                for (Entry entry : line) {
-                    points.add(new PointValue(left + (entry.x - minX) * ratioX,
-                            bottom - (entry.y - minY) * ratioY));
-                }
-                line.updatePointValues(points);
-            }
-        }
     }
 
     public void attachTo(LineChartView view) {
