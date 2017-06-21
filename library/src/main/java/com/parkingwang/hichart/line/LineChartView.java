@@ -249,6 +249,8 @@ public class LineChartView extends FrameLayout {
         RectF rectF = mDataRender.getDrawRect();
         mLineFillRender.setFillContent(rectF.left, rectF.top, rectF.right, rectF.bottom);
         drawDividers(canvas);
+        drawXAxis(canvas);
+        drawYAxis(canvas);
         if (getLineData().isEmpty()) {
             drawEmpty(canvas);
         } else {
@@ -263,8 +265,6 @@ public class LineChartView extends FrameLayout {
 //                }
 //            }
         }
-        drawXAxis(canvas);
-        drawYAxis(canvas);
     }
 
     private void drawDividers(Canvas canvas) {

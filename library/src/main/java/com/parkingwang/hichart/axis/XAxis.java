@@ -31,9 +31,13 @@ public class XAxis extends Axis {
                     min = x;
                 }
             }
-
         }
-        mMinValue = min;
-        mMaxValue = max;
+
+        if (!mIsCustomMin) {
+            mMinValue = min;
+        }
+        if (!mIsCustomMax) {
+            mMaxValue = max;
+        }
     }
 }

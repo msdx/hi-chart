@@ -19,7 +19,8 @@ public abstract class Axis {
     private boolean mCustomLabel;
     private int mDrawCount;
 
-    protected boolean mIsCustomMinMax;
+    protected boolean mIsCustomMin;
+    protected boolean mIsCustomMax;
     protected float mMinValue;
     protected float mMaxValue;
 
@@ -43,7 +44,7 @@ public abstract class Axis {
 
     void internalSetMinValue(float min, boolean isCustom) {
         mMinValue = min;
-        mIsCustomMinMax = isCustom;
+        mIsCustomMin = isCustom;
     }
 
     public float getMaxValue() {
@@ -56,13 +57,19 @@ public abstract class Axis {
 
     void internalSetMaxValue(float max, boolean isCustom) {
         mMaxValue = max;
-        mIsCustomMinMax = isCustom;
+        mIsCustomMax = isCustom;
     }
 
     public void calcMinMaxIfNotCustom() {
-        if (mIsCustomMinMax) {
+        if (mIsCustomMin && mIsCustomMax) {
             return;
         }
+        calcMinMax();
+    }
+
+    public void recalcMinMax() {
+        mIsCustomMax = false;
+        mIsCustomMin = false;
         calcMinMax();
     }
 

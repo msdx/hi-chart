@@ -5,7 +5,6 @@ package com.parkingwang.hichart.axis;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
-import android.util.Log;
 
 import com.parkingwang.hichart.data.Line;
 
@@ -95,7 +94,6 @@ public class XAxisRender extends AxisRender {
 
         for (int i = 0; i < drawCount; i++) {
             final String label = mAxisLabelFormatter.format(value);
-            Log.e("xxxx", value + "..." + label);
             final float halfTextWidth = mTextPaint.measureText(label) / 2;
 
             float textX = start + distance * i;

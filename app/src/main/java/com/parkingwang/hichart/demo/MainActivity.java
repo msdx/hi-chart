@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         LineChartConfig.AxisRightConfig rightConfig = config.axisRightConfig;
         YAxis yAxis = mLineChart.getYAxis();
         yAxis.setDrawCount(rightConfig.labelCount);
+        yAxis.setMinValue(0);
         YAxisRender yAxisRender = mLineChart.getYAxisRender();
         yAxisRender.setDrawLabels(rightConfig.drawLabels);
         yAxisRender.setTextColor(rightConfig.textColor);
@@ -290,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             mLineChart.setXAxis(axis);
             xAxisRender = new FixedXAxisRender();
             axis.setLabels(generateLabels());
+            axis.calcMinMaxIfNotCustom();
         } else {
             XAxis axis = new XAxis();
             axis.setDrawCount(7);

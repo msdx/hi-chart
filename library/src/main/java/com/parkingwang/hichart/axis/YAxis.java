@@ -50,7 +50,11 @@ public class YAxis extends Axis {
         }
 
         float rangeSpace = (max - min) * mRangeRatio;
-        mMinValue = min - rangeSpace;
-        mMaxValue = max + rangeSpace;
+        if (!mIsCustomMin) {
+            mMinValue = min - rangeSpace;
+        }
+        if (!mIsCustomMax) {
+            mMaxValue = max + rangeSpace;
+        }
     }
 }
