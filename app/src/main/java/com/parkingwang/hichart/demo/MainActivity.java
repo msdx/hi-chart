@@ -118,15 +118,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
         yAxisRender.setGridColor(rightConfig.gridColor);
 
-//        LineChartConfig.DataSetConfig dataSetConfig = config.dataSetConfig;
-//        LineRender lineRender = mLineChart.getLineRender();
-//        lineRender.setLineWidth(dpToPx(dataSetConfig.lineWidth));
-//        lineRender.setLineColor(dataSetConfig.lineColor);
-//        lineRender.setCircleRadius(dpToPx(dataSetConfig.circleRadius));
-//        lineRender.setCircleColor(dataSetConfig.circleColor);
-//        lineRender.setCircleHoleRadius(dpToPx(dataSetConfig.circleHoleRadius));
-//        lineRender.setCircleHoleColor(dataSetConfig.circleHoleColor);
-//
 //        mLineChart.getLineFillRender().setFillColor(dataSetConfig.fillColor);
 
         final LineChartConfig.HighlightConfig highlightConfig = config.highlightConfig;
