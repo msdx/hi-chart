@@ -70,7 +70,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         setCheckBoxesListener(R.id.show_empty, R.id.top_divider, R.id.custom_x_axis,
                 R.id.hide_y_axis, R.id.hide_y_axis_label, R.id.pretty_y_axis, R.id.y_axis_offset,
-                R.id.y_axis_grid_line, R.id.enable_grid_line);
+                R.id.y_axis_grid_line, R.id.enable_grid_line, R.id.enable_animator,
+                R.id.animator_delay);
     }
 
     private void setCheckBoxesListener(@IdRes int... ids) {
@@ -134,8 +135,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         mLineChart.setLineChartInsets(offsetLeft, offsetTop, offsetRight, offsetBottom);
 
         mLineChart.setAnimatorTime(ANIMATOR_TIME);
-        mLineChart.setAnimatorStartDelay(ANIMATOR_DELAY);
-        mLineChart.setAnimated(true);
     }
 
     public void setLabelFormatter(LabelFormatter labelFormatter) {
@@ -244,10 +243,16 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             case R.id.enable_grid_line:
                 enableGridDashedLine(isChecked);
                 break;
+            case R.id.enable_animator:
+                enabledAnimator(isChecked);
+                break;
+            case R.id.animator_delay:
+                delayAnimator(isChecked);
+                break;
             default:
                 return;
         }
-        mLineChart.invalidate();
+        mLineChart.notifyDataSetChanged();
     }
 
     private void showEmpty(boolean show) {
@@ -323,9 +328,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         mLineChart.getYAxisRender().setInsetBottom(offset ? dpToPx(10) : 0);
     }
 
-    private void drawYAxisGridLine(boolean draw) {
+    private void drawYAxisGridLine(boolean isDashedLine) {
         YAxisRender yAxisRender = mLineChart.getYAxisRender();
-        if (draw) {
+        if (isDashedLine) {
             yAxisRender.setGridDashedLine(dpToPx(3), dpToPx(4));
         } else {
             yAxisRender.setGridDashedLine(dpToPx(3), dpToPx(0));
@@ -334,6 +339,18 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     private void enableGridDashedLine(boolean enabled) {
         mLineChart.getYAxisRender().enabledGridDashedLine(enabled);
+    }
+
+    private void enabledAnimator(boolean enabled) {
+        mLineChart.setAnimated(enabled);
+    }
+
+    private void delayAnimator(boolean delay) {
+        if (delay) {
+            mLineChart.setAnimatorStartDelay(ANIMATOR_DELAY);
+        } else {
+            mLineChart.setAnimatorStartDelay(0);
+        }
     }
 
     private float dpToPx(float dp) {

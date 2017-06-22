@@ -17,4 +17,6 @@
     <string name="y_axis_offset">Y轴底部向上偏移</string>
     <string name="y_axis_grid_line">Y轴虚线</string>
     <string name="disable_grid_line">禁用Y轴虚线</string>
+    <string name="enabled_animator">动画</string>
+    <string name="animator_delay">动画延迟</string>
 </resources>

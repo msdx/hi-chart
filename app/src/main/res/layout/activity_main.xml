@@ -74,5 +74,13 @@
             android:id="@+id/enable_grid_line"
             style="@style/Wrap"
             android:text="@string/disable_grid_line"/>
+        <CheckBox
+            android:id="@+id/enable_animator"
+            style="@style/Wrap"
+            android:text="@string/enabled_animator"/>
+        <CheckBox
+            android:id="@+id/animator_delay"
+            style="@style/Wrap"
+            android:text="@string/animator_delay"/>
     </com.wefika.flowlayout.FlowLayout>
 </LinearLayout>

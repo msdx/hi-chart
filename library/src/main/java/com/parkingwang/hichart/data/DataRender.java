@@ -37,6 +37,15 @@ public class DataRender extends BaseRender {
             return;
         }
 
+        float percent = mHost.getAnimatorProgress();
+        float endDraw = mDrawRect.left + mDrawRect.width() * percent;
+        boolean isClip = percent < LineChartView.PROGRESS_COMPLETE;
+
+        if (isClip) {
+            canvas.save();
+            canvas.clipRect(0, mDrawRect.top, endDraw, mDrawRect.bottom);
+        }
+
         for (Line line : lines) {
             final LineStyle lineStyle = line.getStyle();
             mLinePaint.setStrokeWidth(lineStyle.getLineWidth());
@@ -50,14 +59,24 @@ public class DataRender extends BaseRender {
             PointValue previous = null;
             for (PointValue point : pointValues) {
                 if (previous != null) {
+                    if (previous.x > endDraw) {
+                        break;
+                    }
                     canvas.drawLine(previous.x, previous.y, point.x, point.y, mLinePaint);
                     drawPoint(canvas, circleRadius, circleHoleRadius, previous);
                 }
                 previous = point;
             }
             if (previous != null) {
+                if (previous.x > endDraw) {
+                    continue;
+                }
                 drawPoint(canvas, circleRadius, circleHoleRadius, previous);
             }
+        }
+
+        if (isClip) {
+            canvas.restore();
         }
     }
 

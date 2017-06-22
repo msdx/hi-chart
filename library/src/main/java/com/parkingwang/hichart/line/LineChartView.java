@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class LineChartView extends FrameLayout {
 
-    private static final float VALUE_COMPLETE = 1f;
+    public static final float PROGRESS_COMPLETE = 1f;
     private static final int DEFAULT_ANIMATOR_TIME = 1000;
 
     private List<Line> mLines = new ArrayList<>();
@@ -58,8 +58,8 @@ public class LineChartView extends FrameLayout {
     private PointValue mPointValue;
     private OnChartValueSelectedListener mOnChartValueSelectedListener;
 
-    private float mDrawPercent = VALUE_COMPLETE;
-    private ValueAnimator mAnimator;
+    private float mAnimatorProgress = PROGRESS_COMPLETE;
+    private final ValueAnimator mAnimator = ValueAnimator.ofFloat(0, PROGRESS_COMPLETE);
     private boolean mAnimated = false;
 
     public LineChartView(Context context) {
@@ -87,15 +87,23 @@ public class LineChartView extends FrameLayout {
         setYAxis(new YAxis());
         setYAxisRender(new YAxisRender());
 
-        mAnimator = ValueAnimator.ofFloat(0, VALUE_COMPLETE);
         mAnimator.setDuration(DEFAULT_ANIMATOR_TIME);
+        initAnimatorListener();
+    }
+
+
+    private void initAnimatorListener() {
         mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                mDrawPercent = (float) animation.getAnimatedValue();
+                mAnimatorProgress = animation.getAnimatedFraction();
                 invalidate();
             }
         });
+    }
+
+    public float getAnimatorProgress() {
+        return mAnimatorProgress;
     }
 
     public void setAnimated(boolean animated) {
@@ -228,12 +236,13 @@ public class LineChartView extends FrameLayout {
         mPointValue = null;
         mXAxis.calcMinMax();
         mYAxis.calcMinMax();
+        updateRendersDrawRect();
         if (mAnimated && !getLineData().isEmpty()) {
-            mDrawPercent = 0;
+            mAnimatorProgress = 0;
             mAnimator.cancel();
             mAnimator.start();
         } else {
-            mDrawPercent = VALUE_COMPLETE;
+            mAnimatorProgress = PROGRESS_COMPLETE;
             invalidate();
         }
     }
@@ -254,7 +263,6 @@ public class LineChartView extends FrameLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        updateRendersDrawRect();
         mDividersRender.draw(canvas);
         drawXAxis(canvas);
         mYAxisRender.draw(canvas);
@@ -263,10 +271,10 @@ public class LineChartView extends FrameLayout {
         } else {
             prepareLinePoints();
             mDataRender.draw(canvas);
-            if (mDrawPercent == VALUE_COMPLETE) {
+            if (mAnimatorProgress == PROGRESS_COMPLETE) {
                 mLineFillRender.draw(canvas);
             }
-//            if (mDrawPercent == VALUE_COMPLETE && mCurrentHighlightPosition >= 0) {
+//            if (mAnimatorProgress == PROGRESS_COMPLETE && mCurrentHighlightPosition >= 0) {
 //                List<PointF> pointList = mLineRender.getPoints();
 //                if (pointList.size() > mCurrentHighlightPosition) {
 //                    mHighlightRender.draw(canvas, pointList.get(mCurrentHighlightPosition), getBottom());
@@ -319,6 +327,7 @@ public class LineChartView extends FrameLayout {
         super.onLayout(changed, left, top, right, bottom);
         if (changed) {
             mWidth = right - left;
+            updateRendersDrawRect();
         }
     }
 
@@ -355,7 +364,7 @@ public class LineChartView extends FrameLayout {
 
     private void onHighlightValue(int lineIndex, int pointIndex, PointValue pointValue) {
         mPointValue = pointValue;
-        if (mDrawPercent == VALUE_COMPLETE) {
+        if (mAnimatorProgress == PROGRESS_COMPLETE) {
             invalidate();
         }
         if (mOnChartValueSelectedListener != null) {
