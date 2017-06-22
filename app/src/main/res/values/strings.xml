@@ -22,4 +22,7 @@
     <string name="fill_current_lines">填充所有线</string>
     <string name="random_fill_color">填充随机颜色</string>
     <string name="random_fill_mode">随机填充模式</string>
+    <string name="show_highlight">显示高亮</string>
+    <string name="show_highlight_vertical">高亮竖线</string>
+    <string name="show_highlight_horizontal">高亮横线</string>
 </resources>

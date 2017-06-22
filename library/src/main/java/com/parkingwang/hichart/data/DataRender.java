@@ -7,7 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 
-import com.parkingwang.hichart.line.LineChartView;
+import com.parkingwang.hichart.view.LineChartView;
 import com.parkingwang.hichart.render.BaseRender;
 
 import java.util.List;

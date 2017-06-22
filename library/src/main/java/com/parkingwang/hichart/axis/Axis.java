@@ -4,7 +4,7 @@
 package com.parkingwang.hichart.axis;
 
 import com.parkingwang.hichart.data.Line;
-import com.parkingwang.hichart.line.LineChartView;
+import com.parkingwang.hichart.view.LineChartView;
 
 import java.util.List;
 

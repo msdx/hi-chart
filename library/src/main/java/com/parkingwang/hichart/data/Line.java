@@ -57,7 +57,7 @@ public class Line implements Iterable<Entry> {
         this.mPoints = points;
     }
 
-    List<PointValue> getPointValues() {
+    public List<PointValue> getPointValues() {
         return mPoints;
     }
 

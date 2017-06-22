@@ -8,7 +8,7 @@ import android.support.annotation.ColorInt;
 
 import com.parkingwang.hichart.data.DataRender;
 import com.parkingwang.hichart.data.Line;
-import com.parkingwang.hichart.line.LineChartView;
+import com.parkingwang.hichart.view.LineChartView;
 import com.parkingwang.hichart.render.BaseRender;
 
 import java.util.List;

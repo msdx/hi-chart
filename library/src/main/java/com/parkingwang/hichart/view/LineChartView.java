@@ -2,7 +2,7 @@
  * Copyright (c) 2017. Xi'an iRain IOT Technology service CO., Ltd (ShenZhen). All Rights Reserved.
  */
 
-package com.parkingwang.hichart.line;
+package com.parkingwang.hichart.view;
 
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
@@ -20,9 +20,11 @@ import com.parkingwang.hichart.axis.YAxis;
 import com.parkingwang.hichart.axis.YAxisRender;
 import com.parkingwang.hichart.data.DataRender;
 import com.parkingwang.hichart.data.Line;
+import com.parkingwang.hichart.data.LineStyle;
 import com.parkingwang.hichart.data.PointValue;
 import com.parkingwang.hichart.divider.DividersRender;
 import com.parkingwang.hichart.empty.EmptyRender;
+import com.parkingwang.hichart.highlight.HighlightRender;
 import com.parkingwang.hichart.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
@@ -54,12 +56,14 @@ public class LineChartView extends FrameLayout {
     private float mInsetBottom;
     private int mWidth;
 
-    private PointValue mPointValue;
+    private PointValue mHighlightPointValue;
     private OnChartValueSelectedListener mOnChartValueSelectedListener;
 
     private float mAnimatorProgress = PROGRESS_COMPLETE;
     private final ValueAnimator mAnimator = ValueAnimator.ofFloat(0, PROGRESS_COMPLETE);
     private boolean mAnimated = false;
+
+    private boolean mDisallowParentIntercept = true;
 
     public LineChartView(Context context) {
         super(context);
@@ -227,7 +231,7 @@ public class LineChartView extends FrameLayout {
     }
 
     public void notifyDataSetChanged() {
-        mPointValue = null;
+        mHighlightPointValue = null;
         mXAxis.calcMinMax();
         mYAxis.calcMinMax();
         updateRendersDrawRect();
@@ -252,6 +256,7 @@ public class LineChartView extends FrameLayout {
         if (mEmptyRender != null) {
             mEmptyRender.setDrawRect(rectF.left, rectF.top, rectF.right, rectF.bottom);
         }
+        mHighlightRender.setDrawRect(rectF.left, rectF.top, rectF.right, rectF.bottom);
     }
 
     @Override
@@ -264,12 +269,9 @@ public class LineChartView extends FrameLayout {
         } else {
             prepareLinePoints();
             mDataRender.draw(canvas);
-//            if (mAnimatorProgress == PROGRESS_COMPLETE && mCurrentHighlightPosition >= 0) {
-//                List<PointF> pointList = mLineRender.getPoints();
-//                if (pointList.size() > mCurrentHighlightPosition) {
-//                    mHighlightRender.draw(canvas, pointList.get(mCurrentHighlightPosition), getBottom());
-//                }
-//            }
+            if (mAnimatorProgress == PROGRESS_COMPLETE && mHighlightPointValue != null) {
+                mHighlightRender.draw(canvas);
+            }
         }
     }
 
@@ -322,38 +324,81 @@ public class LineChartView extends FrameLayout {
     }
 
     public void highlightValue(int lineIndex, int pointIndex) {
-        // TODO: 17-6-20 calc point value
-//        onHighlightValue(lineIndex, pointIndex);
+        if (lineIndex < 0 || pointIndex < 0) {
+            cancelHighlightValue();
+        }
+        onHighlightValue(lineIndex, pointIndex, getLineData().get(lineIndex).getPointValues().get(pointIndex));
+    }
+
+    private void cancelHighlightValue() {
+        mHighlightRender.setPointValue(null);
+        mHighlightPointValue = null;
+        if (mOnChartValueSelectedListener != null) {
+            mOnChartValueSelectedListener.onValueUnselected();
+        }
+    }
+
+    public void setDisallowParentIntercept(boolean disallow) {
+        mDisallowParentIntercept = disallow;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mDisallowParentIntercept && !getLineData().isEmpty()) {
+            getParent().requestDisallowInterceptTouchEvent(true);
+            return true;
+        }
+        return super.onInterceptTouchEvent(ev);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (getLineData().isEmpty()) {
+        List<Line> lines = getLineData();
+        if (lines.isEmpty()) {
             return false;
         }
-//
-//        List<PointF> points = mLineRender.getPoints();
-//        if (points.isEmpty()) {
-//            return true;
-//        }
-//
-//        int size = points.size();
-//        float avg = (mWidth - mInsetLeft - mInsetRight) / (size - 1);
-//        int position = (int) ((event.getX() - mInsetLeft + avg / 2) / avg);
-//        if (position < 0) {
-//            position = 0;
-//        } else if (position >= size) {
-//            position = size - 1;
-//        }
-//
-//        if (position != mCurrentHighlightPosition) {
-//            onHighlightValue(position);
-//        }
+
+        int lineIndex = 0;
+        int pointIndex = 0;
+        PointValue highlightPoint = null;
+        float x = event.getX();
+        float y = event.getY();
+        float minDistance = Float.MAX_VALUE;
+        for (int i = 0, lineSize = lines.size(); i < lineSize; i++) {
+            List<PointValue> points = lines.get(i).getPointValues();
+            for (int j = 0, size = points.size(); j < size; j++) {
+                PointValue point = points.get(j);
+                float distance = Math.abs(point.x - x);
+                if (distance > minDistance) {
+                    continue;
+                }
+                if (distance == minDistance) {
+                    if (Math.abs(highlightPoint.y - y) < Math.abs(point.y - y)) {
+                        continue;
+                    }
+                }
+                lineIndex = i;
+                pointIndex = j;
+                highlightPoint = point;
+                minDistance = distance;
+            }
+        }
+        if (highlightPoint != mHighlightPointValue) {
+            onHighlightValue(lineIndex, pointIndex, highlightPoint);
+        }
         return true;
     }
 
     private void onHighlightValue(int lineIndex, int pointIndex, PointValue pointValue) {
-        mPointValue = pointValue;
+        if (mHighlightRender.isEnabled()) {
+            Line line = getLineData().get(lineIndex);
+            LineStyle style = line.getStyle();
+            mHighlightRender.setHighlightCircleColor(style.getCircleColor());
+            mHighlightRender.setHighlightCircleRadius(style.getCircleRadius());
+        }
+        mHighlightRender.setPointValue(pointValue);
+
+        mHighlightPointValue = pointValue;
         if (mAnimatorProgress == PROGRESS_COMPLETE) {
             invalidate();
         }

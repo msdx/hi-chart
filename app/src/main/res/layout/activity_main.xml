@@ -35,7 +35,7 @@
                 android:text="@string/random_fill_mode"/>
         </com.wefika.flowlayout.FlowLayout>
 
-        <com.parkingwang.hichart.line.LineChartView
+        <com.parkingwang.hichart.view.LineChartView
             android:id="@+id/line_chart"
             android:layout_width="match_parent"
             android:layout_height="280dp"
@@ -97,6 +97,18 @@
                 android:id="@+id/random_fill_color"
                 style="@style/Wrap"
                 android:text="@string/random_fill_color"/>
+            <CheckBox
+                android:id="@+id/show_highlight"
+                style="@style/Wrap"
+                android:text="@string/show_highlight"/>
+            <CheckBox
+                android:id="@+id/show_highlight_vertical"
+                style="@style/Wrap"
+                android:text="@string/show_highlight_vertical"/>
+            <CheckBox
+                android:id="@+id/show_highlight_horizontal"
+                style="@style/Wrap"
+                android:text="@string/show_highlight_horizontal"/>
         </com.wefika.flowlayout.FlowLayout>
     </LinearLayout>
 </ScrollView>

@@ -30,8 +30,8 @@ import com.parkingwang.hichart.data.LineStyle;
 import com.parkingwang.hichart.divider.Divider;
 import com.parkingwang.hichart.divider.DividersRender;
 import com.parkingwang.hichart.empty.EmptyTextRender;
-import com.parkingwang.hichart.line.HighlightRender;
-import com.parkingwang.hichart.line.LineChartView;
+import com.parkingwang.hichart.highlight.HighlightRender;
+import com.parkingwang.hichart.view.LineChartView;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -74,7 +74,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         setCheckBoxesListener(R.id.show_empty, R.id.top_divider, R.id.custom_x_axis,
                 R.id.hide_y_axis, R.id.hide_y_axis_label, R.id.pretty_y_axis, R.id.y_axis_offset,
                 R.id.y_axis_grid_line, R.id.enable_grid_line, R.id.enable_animator,
-                R.id.animator_delay, R.id.fill_lines, R.id.random_fill_color);
+                R.id.animator_delay, R.id.fill_lines, R.id.random_fill_color, R.id.show_highlight,
+                R.id.show_highlight_vertical, R.id.show_highlight_horizontal);
     }
 
     private void setCheckBoxesListener(@IdRes int... ids) {
@@ -185,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     }
 
     private void addLine() {
-         Line line = new Line();
+        Line line = new Line();
         for (int i = 0; i < mColumn; i++) {
             line.add(new Entry(i, mRandom.nextInt(10000)));
         }
@@ -267,6 +268,15 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 break;
             case R.id.random_fill_color:
                 randomFillColor(isChecked);
+                break;
+            case R.id.show_highlight:
+                showHighlight(isChecked);
+                break;
+            case R.id.show_highlight_horizontal:
+                showHighlightHorizontal(isChecked);
+                break;
+            case R.id.show_highlight_vertical:
+                showHighlightVertical(isChecked);
                 break;
             default:
                 return;
@@ -387,6 +397,18 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     : Color.parseColor("#1BFFFFFF");
             line.getStyle().setFillColor(color);
         }
+    }
+
+    private void showHighlight(boolean show) {
+        mLineChart.getHighlightRender().setEnabled(show);
+    }
+
+    private void showHighlightVertical(boolean show) {
+        mLineChart.getHighlightRender().setDrawVerticalLine(show);
+    }
+
+    private void showHighlightHorizontal(boolean show) {
+        mLineChart.getHighlightRender().setDrawHorizontalLine(show);
     }
 
     private float dpToPx(float dp) {

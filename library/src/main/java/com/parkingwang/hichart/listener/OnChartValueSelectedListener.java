@@ -3,8 +3,8 @@
  */
 package com.parkingwang.hichart.listener;
 
-import com.parkingwang.hichart.line.LineChartView;
 import com.parkingwang.hichart.data.PointValue;
+import com.parkingwang.hichart.view.LineChartView;
 
 /**
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
@@ -12,4 +12,6 @@ import com.parkingwang.hichart.data.PointValue;
  */
 public interface OnChartValueSelectedListener {
     void onValueSelected(LineChartView chartView, int lineIndex, int pointIndex, PointValue point);
+
+    void onValueUnselected();
 }
