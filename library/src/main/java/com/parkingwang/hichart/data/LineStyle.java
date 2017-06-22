@@ -4,6 +4,7 @@
 package com.parkingwang.hichart.data;
 
 import android.graphics.Color;
+import android.graphics.Xfermode;
 import android.support.annotation.ColorInt;
 
 import com.parkingwang.hichart.util.DimenUtil;
@@ -21,6 +22,8 @@ public class LineStyle {
     private static final int DEFAULT_CIRCLE_COLOR = Color.WHITE;
     private static final float DEFAULT_CIRCLE_HOLE_RADIUS = DimenUtil.dpToPx(1.5f);
     private static final int DEFAULT_CIRCLE_HOLE_COLOR = Color.parseColor("#1D8FEE");
+    private static final boolean DEFAULT_FILL = false;
+    private static final int DEFAULT_FILL_COLOR = Color.parseColor("#1BFFFFFF");
 
     private float mLineWidth = DEFAULT_LINE_WIDTH;
     @ColorInt
@@ -31,6 +34,10 @@ public class LineStyle {
     private float mCircleHoleRadius = DEFAULT_CIRCLE_HOLE_RADIUS;
     @ColorInt
     private int mCircleHoleColor = DEFAULT_CIRCLE_HOLE_COLOR;
+    private boolean mIsFill = DEFAULT_FILL;
+    @ColorInt
+    private int mFillColor = DEFAULT_FILL_COLOR;
+    private Xfermode mFillMode = null;
 
     public float getLineWidth() {
         return mLineWidth;
@@ -78,5 +85,29 @@ public class LineStyle {
 
     public void setCircleHoleColor(int circleHoleColor) {
         mCircleHoleColor = circleHoleColor;
+    }
+
+    public boolean isFill() {
+        return mIsFill;
+    }
+
+    public void setFill(boolean fill) {
+        mIsFill = fill;
+    }
+
+    public int getFillColor() {
+        return mFillColor;
+    }
+
+    public void setFillColor(int fillColor) {
+        mFillColor = fillColor;
+    }
+
+    public Xfermode getFillMode() {
+        return mFillMode;
+    }
+
+    public void setFillMode(Xfermode fillMode) {
+        mFillMode = fillMode;
     }
 }

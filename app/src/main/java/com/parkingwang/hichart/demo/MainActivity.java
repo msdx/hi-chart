@@ -4,6 +4,9 @@
 package com.parkingwang.hichart.demo;
 
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Xfermode;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -71,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         setCheckBoxesListener(R.id.show_empty, R.id.top_divider, R.id.custom_x_axis,
                 R.id.hide_y_axis, R.id.hide_y_axis_label, R.id.pretty_y_axis, R.id.y_axis_offset,
                 R.id.y_axis_grid_line, R.id.enable_grid_line, R.id.enable_animator,
-                R.id.animator_delay);
+                R.id.animator_delay, R.id.fill_lines, R.id.random_fill_color);
     }
 
     private void setCheckBoxesListener(@IdRes int... ids) {
@@ -119,8 +122,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
         yAxisRender.setGridColor(rightConfig.gridColor);
 
-//        mLineChart.getLineFillRender().setFillColor(dataSetConfig.fillColor);
-
         final LineChartConfig.HighlightConfig highlightConfig = config.highlightConfig;
         HighlightRender highlightRender = mLineChart.getHighlightRender();
         highlightRender.setHighlightCircleColor(highlightConfig.circleColor);
@@ -155,6 +156,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 break;
             case R.id.remove_line:
                 removeLine();
+                break;
+            case R.id.random_fill_mode:
+                randomFillMode();
                 break;
         }
     }
@@ -197,6 +201,15 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         if (!lines.isEmpty()) {
             lines.remove(lines.size() - 1);
             mLineChart.notifyDataSetChanged();
+        }
+    }
+
+    private void randomFillMode() {
+        List<Line> lines = mLineChart.getLineData();
+        PorterDuff.Mode[] modes = PorterDuff.Mode.values();
+        Xfermode mode = new PorterDuffXfermode(modes[mRandom.nextInt(modes.length)]);
+        for (Line line : lines) {
+            line.getStyle().setFillMode(mode);
         }
     }
 
@@ -248,6 +261,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 break;
             case R.id.animator_delay:
                 delayAnimator(isChecked);
+                break;
+            case R.id.fill_lines:
+                fillCurrentLines(isChecked);
+                break;
+            case R.id.random_fill_color:
+                randomFillColor(isChecked);
                 break;
             default:
                 return;
@@ -350,6 +369,23 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             mLineChart.setAnimatorStartDelay(ANIMATOR_DELAY);
         } else {
             mLineChart.setAnimatorStartDelay(0);
+        }
+    }
+
+    private void fillCurrentLines(boolean fill) {
+        List<Line> lines = mLineChart.getLineData();
+        for (Line line : lines) {
+            line.getStyle().setFill(fill);
+        }
+    }
+
+    private void randomFillColor(boolean random) {
+        List<Line> lines = mLineChart.getLineData();
+        for (Line line : lines) {
+            int color = random
+                    ? Color.argb(mRandom.nextInt(100), mRandom.nextInt(255), mRandom.nextInt(255), mRandom.nextInt(255))
+                    : Color.parseColor("#1BFFFFFF");
+            line.getStyle().setFillColor(color);
         }
     }
 

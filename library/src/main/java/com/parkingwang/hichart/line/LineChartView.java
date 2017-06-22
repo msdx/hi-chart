@@ -42,7 +42,6 @@ public class LineChartView extends FrameLayout {
     private DataRender mDataRender;
     private DividersRender mDividersRender;
     private EmptyRender mEmptyRender;
-    private LineFillRender mLineFillRender;
     private HighlightRender mHighlightRender;
     private XAxis mXAxis;
     private XAxisRender mXAxisRender;
@@ -80,7 +79,6 @@ public class LineChartView extends FrameLayout {
         mDataRender = new DataRender();
         mDataRender.attachTo(this);
         mDividersRender = new DividersRender();
-        mLineFillRender = new LineFillRender();
         mHighlightRender = new HighlightRender();
         setXAxis(new XAxis());
         setXAxisRender(new XAxisRender());
@@ -144,10 +142,6 @@ public class LineChartView extends FrameLayout {
 
     public void setEmptyRender(EmptyRender emptyRender) {
         mEmptyRender = emptyRender;
-    }
-
-    public LineFillRender getLineFillRender() {
-        return mLineFillRender;
     }
 
     public HighlightRender getHighlightRender() {
@@ -251,7 +245,6 @@ public class LineChartView extends FrameLayout {
         mDataRender.setDrawRect(mInsetLeft, 0,
                 getRight() - Math.max(mInsetRight, mYAxisRender.getWidth()), getHeight() - mXAxisRender.getHeight());
         RectF rectF = mDataRender.getDrawRect();
-        mLineFillRender.setFillContent(rectF.left, rectF.top, rectF.right, rectF.bottom);
         mDividersRender.setDrawRect(0, 0, getWidth(), getHeight());
         mXAxisRender.setDrawRect(0, 0, getWidth(), getHeight() - mDataRender.getDrawRect().bottom);
         RectF dataRect = getDataRender().getDrawRect();
@@ -271,9 +264,6 @@ public class LineChartView extends FrameLayout {
         } else {
             prepareLinePoints();
             mDataRender.draw(canvas);
-            if (mAnimatorProgress == PROGRESS_COMPLETE) {
-                mLineFillRender.draw(canvas);
-            }
 //            if (mAnimatorProgress == PROGRESS_COMPLETE && mCurrentHighlightPosition >= 0) {
 //                List<PointF> pointList = mLineRender.getPoints();
 //                if (pointList.size() > mCurrentHighlightPosition) {

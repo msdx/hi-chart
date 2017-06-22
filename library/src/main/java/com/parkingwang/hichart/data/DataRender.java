@@ -5,6 +5,7 @@ package com.parkingwang.hichart.data;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 
 import com.parkingwang.hichart.line.LineChartView;
 import com.parkingwang.hichart.render.BaseRender;
@@ -23,6 +24,7 @@ public class DataRender extends BaseRender {
     private final Paint mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
     private final Paint mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
     private final Paint mCircleHolePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+    private final Paint mFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
 
     public DataRender() {
         mLinePaint.setStyle(Paint.Style.FILL);
@@ -44,8 +46,40 @@ public class DataRender extends BaseRender {
         if (isClip) {
             canvas.save();
             canvas.clipRect(0, mDrawRect.top, endDraw, mDrawRect.bottom);
+        } else {
+            drawFill(canvas, lines);
         }
 
+        drawLinesAndPoints(canvas, lines, endDraw);
+
+        if (isClip) {
+            canvas.restore();
+        }
+    }
+
+    private void drawFill(Canvas canvas, List<Line> lines) {
+        Path path = new Path();
+        for (Line line : lines) {
+            LineStyle style = line.getStyle();
+            if (!style.isFill()) {
+                continue;
+            }
+            mFillPaint.setColor(style.getFillColor());
+            mFillPaint.setXfermode(style.getFillMode());
+
+            path.reset();
+            List<PointValue> points = line.getPointValues();
+            path.moveTo(mDrawRect.left, mDrawRect.bottom);
+            for (PointValue point : points) {
+                path.lineTo(point.x, point.y);
+            }
+            path.lineTo(mDrawRect.right, mDrawRect.bottom);
+            path.close();
+            canvas.drawPath(path, mFillPaint);
+        }
+    }
+
+    private void drawLinesAndPoints(Canvas canvas, List<Line> lines, float endDraw) {
         for (Line line : lines) {
             final LineStyle lineStyle = line.getStyle();
             mLinePaint.setStrokeWidth(lineStyle.getLineWidth());
@@ -73,10 +107,6 @@ public class DataRender extends BaseRender {
                 }
                 drawPoint(canvas, circleRadius, circleHoleRadius, previous);
             }
-        }
-
-        if (isClip) {
-            canvas.restore();
         }
     }
 
