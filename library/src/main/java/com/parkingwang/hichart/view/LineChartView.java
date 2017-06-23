@@ -20,10 +20,10 @@ import com.parkingwang.hichart.axis.YAxis;
 import com.parkingwang.hichart.axis.YAxisRender;
 import com.parkingwang.hichart.data.DataRender;
 import com.parkingwang.hichart.data.Line;
-import com.parkingwang.hichart.data.LineStyle;
 import com.parkingwang.hichart.data.PointValue;
 import com.parkingwang.hichart.divider.DividersRender;
 import com.parkingwang.hichart.empty.EmptyRender;
+import com.parkingwang.hichart.highlight.HighlightLineRender;
 import com.parkingwang.hichart.highlight.HighlightRender;
 import com.parkingwang.hichart.listener.OnChartValueSelectedListener;
 
@@ -83,7 +83,7 @@ public class LineChartView extends FrameLayout {
         mDataRender = new DataRender();
         mDataRender.attachTo(this);
         mDividersRender = new DividersRender();
-        mHighlightRender = new HighlightRender();
+        setHighlightRender(new HighlightLineRender());
         setXAxis(new XAxis());
         setXAxisRender(new XAxisRender());
         setYAxis(new YAxis());
@@ -150,6 +150,11 @@ public class LineChartView extends FrameLayout {
 
     public HighlightRender getHighlightRender() {
         return mHighlightRender;
+    }
+
+    public void setHighlightRender(HighlightRender render) {
+        mHighlightRender = render;
+        mHighlightRender.attachTo(this);
     }
 
     public XAxis getXAxis() {
@@ -235,6 +240,7 @@ public class LineChartView extends FrameLayout {
         mXAxis.calcMinMax();
         mYAxis.calcMinMax();
         updateRendersDrawRect();
+        prepareLinePoints();
         if (mAnimated && !getLineData().isEmpty()) {
             mAnimatorProgress = 0;
             mAnimator.cancel();
@@ -267,7 +273,6 @@ public class LineChartView extends FrameLayout {
         if (getLineData().isEmpty()) {
             drawEmpty(canvas);
         } else {
-            prepareLinePoints();
             mDataRender.draw(canvas);
             if (mAnimatorProgress == PROGRESS_COMPLETE && mHighlightPointValue != null) {
                 mHighlightRender.draw(canvas);
@@ -331,7 +336,7 @@ public class LineChartView extends FrameLayout {
     }
 
     private void cancelHighlightValue() {
-        mHighlightRender.setPointValue(null);
+        mHighlightRender.updateHighlightInfo(-1, -1, null);
         mHighlightPointValue = null;
         if (mOnChartValueSelectedListener != null) {
             mOnChartValueSelectedListener.onValueUnselected();
@@ -391,12 +396,8 @@ public class LineChartView extends FrameLayout {
 
     private void onHighlightValue(int lineIndex, int pointIndex, PointValue pointValue) {
         if (mHighlightRender.isEnabled()) {
-            Line line = getLineData().get(lineIndex);
-            LineStyle style = line.getStyle();
-            mHighlightRender.setHighlightCircleColor(style.getCircleColor());
-            mHighlightRender.setHighlightCircleRadius(style.getCircleRadius());
+            mHighlightRender.updateHighlightInfo(lineIndex, pointIndex, pointValue);
         }
-        mHighlightRender.setPointValue(pointValue);
 
         mHighlightPointValue = pointValue;
         if (mAnimatorProgress == PROGRESS_COMPLETE) {

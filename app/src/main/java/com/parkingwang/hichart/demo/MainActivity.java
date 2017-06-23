@@ -30,6 +30,7 @@ import com.parkingwang.hichart.data.LineStyle;
 import com.parkingwang.hichart.divider.Divider;
 import com.parkingwang.hichart.divider.DividersRender;
 import com.parkingwang.hichart.empty.EmptyTextRender;
+import com.parkingwang.hichart.highlight.HighlightLineRender;
 import com.parkingwang.hichart.highlight.HighlightRender;
 import com.parkingwang.hichart.view.LineChartView;
 
@@ -125,10 +126,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         final LineChartConfig.HighlightConfig highlightConfig = config.highlightConfig;
         HighlightRender highlightRender = mLineChart.getHighlightRender();
-        highlightRender.setHighlightCircleColor(highlightConfig.circleColor);
-        highlightRender.setHighlightCircleRadius(dpToPx(highlightConfig.circleRadius));
-        highlightRender.setHighlightLineColor(highlightConfig.lineColor);
-        highlightRender.setHighlightLineWidth(dpToPx(highlightConfig.lineWidth));
+        if (highlightRender instanceof HighlightLineRender) {
+            ((HighlightLineRender) highlightRender).setHighlightLineColor(highlightConfig.lineColor);
+            ((HighlightLineRender) highlightRender).setHighlightLineWidth(dpToPx(highlightConfig.lineWidth));
+        }
 
         final float offsetLeft = dpToPx(10);
         final float offsetRight = dpToPx(25);
@@ -404,11 +405,17 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     }
 
     private void showHighlightVertical(boolean show) {
-        mLineChart.getHighlightRender().setDrawVerticalLine(show);
+        HighlightRender render = mLineChart.getHighlightRender();
+        if (render instanceof HighlightLineRender) {
+            ((HighlightLineRender) render).setDrawVerticalLine(show);
+        }
     }
 
     private void showHighlightHorizontal(boolean show) {
-        mLineChart.getHighlightRender().setDrawHorizontalLine(show);
+        HighlightRender render = mLineChart.getHighlightRender();
+        if (render instanceof HighlightLineRender) {
+            ((HighlightLineRender) render).setDrawHorizontalLine(show);
+        }
     }
 
     private float dpToPx(float dp) {

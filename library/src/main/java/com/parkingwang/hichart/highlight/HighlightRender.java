@@ -5,50 +5,27 @@
 package com.parkingwang.hichart.highlight;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.support.annotation.ColorInt;
 
+import com.parkingwang.hichart.data.Line;
 import com.parkingwang.hichart.data.PointValue;
 import com.parkingwang.hichart.render.BaseRender;
+import com.parkingwang.hichart.view.LineChartView;
+
+import java.util.List;
 
 /**
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-04-18 0.1
  */
-public class HighlightRender extends BaseRender {
-    private static final int DEFAULT_LINE_COLOR = Color.WHITE;
-    private static final int DEFAULT_LINE_WIDTH = 2;
-
-    private Paint mHighlightCirclePaint;
-    private Paint mHighlightLinePaint;
-
-    private boolean mEnabled = false;
-
-    private float mHighlightRadius;
-    private boolean mDrawVerticalLine = true;
-    private boolean mDrawHorizontalLine = true;
+public abstract class HighlightRender extends BaseRender {
 
     private PointValue mPointValue;
+    private int mLineIndex;
+    private int mPointIndex;
 
-    public HighlightRender() {
-        mHighlightCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-        mHighlightCirclePaint.setStyle(Paint.Style.FILL);
+    private boolean mEnabled;
 
-        mHighlightLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-        mHighlightLinePaint.setColor(DEFAULT_LINE_COLOR);
-        mHighlightLinePaint.setStrokeWidth(DEFAULT_LINE_WIDTH);
-        mHighlightLinePaint.setStyle(Paint.Style.FILL);
-    }
-
-    public void setDrawVerticalLine(boolean drawVerticalLine) {
-        mDrawVerticalLine = drawVerticalLine;
-    }
-
-    public void setDrawHorizontalLine(boolean drawHorizontalLine) {
-        mDrawHorizontalLine = drawHorizontalLine;
-    }
+    private LineChartView mHost;
 
     public boolean isEnabled() {
         return mEnabled;
@@ -58,38 +35,32 @@ public class HighlightRender extends BaseRender {
         mEnabled = enabled;
     }
 
-    public void setHighlightCircleColor(@ColorInt int color) {
-        mHighlightCirclePaint.setColor(color);
+    public PointValue getPointValue() {
+        return mPointValue;
     }
 
-    public void setHighlightLineColor(@ColorInt int color) {
-        mHighlightLinePaint.setColor(color);
+    public int getLineIndex() {
+        return mLineIndex;
     }
 
-    public void setHighlightLineWidth(float width) {
-        mHighlightLinePaint.setStrokeWidth(width);
+    public int getPointIndex() {
+        return mPointIndex;
     }
 
-    public void setHighlightCircleRadius(float radius) {
-        mHighlightRadius = radius;
+    public void updateHighlightInfo(int lineIndex, int pointIndex, PointValue pointValue) {
+        this.mLineIndex = lineIndex;
+        this.mPointIndex = pointIndex;
+        this.mPointValue = pointValue;
     }
 
-    public void setPointValue(PointValue pointValue) {
-        mPointValue = pointValue;
+    public void attachTo(LineChartView chartView) {
+        mHost = chartView;
+    }
+
+    public List<Line> getData() {
+        return mHost.getLineData();
     }
 
     @Override
-    public void draw(Canvas canvas) {
-        if (mPointValue == null || !mEnabled) {
-            return;
-        }
-        RectF rect = getDrawRect();
-        canvas.drawCircle(mPointValue.x, mPointValue.y, mHighlightRadius, mHighlightCirclePaint);
-        if (mDrawHorizontalLine) {
-            canvas.drawLine(rect.left, mPointValue.y, rect.right, mPointValue.y, mHighlightLinePaint);
-        }
-        if (mDrawVerticalLine) {
-            canvas.drawLine(mPointValue.x, rect.top, mPointValue.x, rect.bottom, mHighlightLinePaint);
-        }
-    }
+    public abstract void draw(Canvas canvas);
 }
