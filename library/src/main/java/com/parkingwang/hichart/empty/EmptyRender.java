@@ -8,7 +8,7 @@ import android.graphics.Canvas;
 import com.parkingwang.hichart.render.Render;
 
 /**
- * 没有数据时的绘制
+ * Draw the canvas when there has no data in line chart.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-14 0.1

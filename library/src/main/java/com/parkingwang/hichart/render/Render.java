@@ -7,7 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.RectF;
 
 /**
- * Render接口，设置每个Render应该绘制的区域。
+ * Render is an interface that defines the draw area of the render and the drawing behavior.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-14 0.1

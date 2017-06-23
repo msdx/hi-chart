@@ -8,7 +8,7 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
 /**
- * 尺寸计算工具类
+ * A util for dimen unit conversion.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-16 0.1

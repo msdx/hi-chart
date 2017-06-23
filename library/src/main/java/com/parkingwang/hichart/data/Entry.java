@@ -4,6 +4,8 @@
 package com.parkingwang.hichart.data;
 
 /**
+ * Entry is the smallest data model for line chart.
+ *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-13 0.1
  */

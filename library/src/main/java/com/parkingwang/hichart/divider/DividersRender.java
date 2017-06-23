@@ -9,7 +9,7 @@ import android.graphics.Paint;
 import com.parkingwang.hichart.render.BaseRender;
 
 /**
- * 图表分割线
+ * Draw the dividers for the line chart view.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-14 0.1
@@ -26,50 +26,94 @@ public class DividersRender extends BaseRender {
         mPaint.setStyle(Paint.Style.FILL);
     }
 
+    /**
+     * @return The left divider.
+     */
     public Divider getLeftDivider() {
         return mLeftDivider;
     }
 
+    /**
+     * Set the left divider.
+     *
+     * @param leftDivider The divider to set.
+     */
     public void setLeftDivider(Divider leftDivider) {
         mLeftDivider = leftDivider;
     }
 
+    /**
+     * @return The top divider.
+     */
     public Divider getTopDivider() {
         return mTopDivider;
     }
 
+    /**
+     * Set the top divider.
+     *
+     * @param topDivider The divider to set.
+     */
     public void setTopDivider(Divider topDivider) {
         mTopDivider = topDivider;
     }
 
+    /**
+     * @return The right divider.
+     */
     public Divider getRightDivider() {
         return mRightDivider;
     }
 
+    /**
+     * Set the right divider.
+     *
+     * @param rightDivider The divider to set.
+     */
     public void setRightDivider(Divider rightDivider) {
         mRightDivider = rightDivider;
     }
 
+    /**
+     * @return The bottom divider.
+     */
     public Divider getBottomDivider() {
         return mBottomDivider;
     }
 
+    /**
+     * Set the bottom divider.
+     *
+     * @param bottomDivider The divider to set.
+     */
     public void setBottomDivider(Divider bottomDivider) {
         mBottomDivider = bottomDivider;
     }
 
+    /**
+     * @return The width of the left divider
+     */
     public float getLeftWidth() {
         return mLeftDivider == null ? 0 : mLeftDivider.getWidth();
     }
 
+    /**
+     * @return The height of the top divider
+     */
     public float getTopWidth() {
         return mTopDivider == null ? 0 : mTopDivider.getWidth();
     }
 
+    /**
+     * @return The width of the right divider
+     */
     public float getRightWidth() {
         return mRightDivider == null ? 0 : mRightDivider.getWidth();
     }
 
+    /**
+     * @return The height of the bottom divider.
+     */
     public float getBottomWidth() {
         return mBottomDivider == null ? 0 : mBottomDivider.getWidth();
     }

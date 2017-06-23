@@ -11,7 +11,7 @@ import com.parkingwang.hichart.axis.XAxisRender;
 import java.util.List;
 
 /**
- * 绘制固定的横坐标.
+ * This render implement how to draw the fixed x-axis.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-14 0.1
@@ -19,6 +19,7 @@ import java.util.List;
 public class FixedXAxisRender extends XAxisRender {
     private static final int MIN_SHOW_COUNT = 2;
 
+    @Override
     public float getHeight() {
         return mHeight;
     }

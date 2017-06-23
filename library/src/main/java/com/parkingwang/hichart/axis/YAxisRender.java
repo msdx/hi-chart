@@ -13,7 +13,7 @@ import com.parkingwang.hichart.util.DimenUtil;
 import java.text.DecimalFormat;
 
 /**
- * Y轴绘制。
+ * The render to draw Y-axis.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-16 0.1
@@ -60,53 +60,110 @@ public class YAxisRender extends AxisRender {
         mLabelPaint.setTextSize(DEFAULT_TEXT_SIZE);
     }
 
+    /**
+     * Set the enabled state to this render.
+     *
+     * @param enabled True to draw Y-axis, false otherwise.
+     */
     public void setEnabled(boolean enabled) {
         mEnabled = enabled;
     }
 
+    /**
+     * Set whether draw the Y-axis labels.
+     *
+     * @param drawLabels True to draw labels, false otherwise.
+     */
     public void setDrawLabels(boolean drawLabels) {
         mDrawLabels = drawLabels;
     }
 
+    /**
+     * Set the text color of the labels.
+     *
+     * @param textColor The text color to set.
+     */
     public void setTextColor(int textColor) {
         mLabelPaint.setColor(textColor);
     }
 
+    /**
+     * Set the text size of the labels.
+     *
+     * @param textSize The text size to set.
+     */
     public void setTextSize(float textSize) {
         mLabelPaint.setTextSize(textSize);
     }
 
+    /**
+     * Set the grid dash line length and space.
+     *
+     * @param dashLineLength The length to set.
+     * @param dashLineSpace  The space to set.
+     */
     public void setGridDashedLine(float dashLineLength, float dashLineSpace) {
         mGridLinePaint.setPathEffect(new DashPathEffect(new float[]{dashLineLength, dashLineSpace}, 0));
         mEnabledGridLine = true;
     }
 
+    /**
+     * Set whether enable draw the grid line
+     *
+     * @param enabled True to draw the grid line, false otherwise.
+     */
     public void enabledGridDashedLine(boolean enabled) {
         mEnabledGridLine = enabled;
     }
 
+    /**
+     * Set the grid line width.
+     *
+     * @param gridLineWidth The width to set.
+     */
     public void setGridLineWidth(float gridLineWidth) {
         mGridLinePaint.setStrokeWidth(gridLineWidth);
     }
 
-    public void setGridColor(int gridColor) {
+    /**
+     * Set the grid line color.
+     *
+     * @param gridColor The color to set.
+     */
+    public void setGridLineColor(int gridColor) {
         mGridLinePaint.setColor(gridColor);
     }
 
+    /**
+     * @return The bottom inset of the Y-axis.
+     */
     public float getInsetBottom() {
         return mInsetBottom;
     }
 
+    /**
+     * Set the bottom inset of the Y-axis
+     *
+     * @param insetBottom The inset to set.
+     */
     public void setInsetBottom(float insetBottom) {
         mInsetBottom = insetBottom;
     }
 
+    /**
+     * Set the label formatter for Y-axis
+     *
+     * @param labelFormatter The label formatter to set.
+     */
     public void setLabelFormatter(AxisLabelFormatter labelFormatter) {
         if (labelFormatter != null) {
             mLabelFormatter = labelFormatter;
         }
     }
 
+    /**
+     * @return The width of the Y-axis.
+     */
     public float getWidth() {
         if (mDrawLabels) {
             if (mWidth != 0) {
@@ -129,6 +186,11 @@ public class YAxisRender extends AxisRender {
         }
     }
 
+    /**
+     * Set the width to the Y-axis
+     *
+     * @param width The width of the Y-axis
+     */
     public void setWidth(int width) {
         mWidth = width;
     }
@@ -169,6 +231,9 @@ public class YAxisRender extends AxisRender {
         }
     }
 
+    /**
+     * @return The Y-axis of the line chart.
+     */
     protected YAxis getYAxis() {
         return getHost().getYAxis();
     }

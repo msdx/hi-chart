@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             yAxisRender.setGridDashedLine(dpToPx(rightConfig.dashLineLength), dpToPx(rightConfig.dashLineSpace));
             yAxisRender.setGridLineWidth(dpToPx(rightConfig.dashLineWidth));
         }
-        yAxisRender.setGridColor(rightConfig.gridColor);
+        yAxisRender.setGridLineColor(rightConfig.gridColor);
 
         final LineChartConfig.HighlightConfig highlightConfig = config.highlightConfig;
         HighlightRender highlightRender = mLineChart.getHighlightRender();
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         drawable.setPadding(dpToPx(8));
         HighlightDrawableRender render = new HighlightDrawableRender(drawable);
         render.setSelectAllPoint(true);
-        render.setShowOnHighPoint(true);
+        render.setShowOnHighestPoint(true);
         mLineChart.setHighlightRender(render);
     }
 

@@ -12,7 +12,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 /**
- * 绘制横坐标.
+ * The render to draw X-axis.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-14 0.1
@@ -33,30 +33,59 @@ public class XAxisRender extends AxisRender {
     private float mPaddingLeft;
     private float mPaddingRight;
 
+    /**
+     * @return The height of the X-axis
+     */
     public float getHeight() {
         return !getLineData().isEmpty() ? mHeight : 0;
     }
 
+    /**
+     * Set the height to the X-axis.
+     *
+     * @param height The height to set.
+     */
     public void setHeight(float height) {
         mHeight = height;
     }
 
+    /**
+     * @return The left padding of the X-axis
+     */
     public float getPaddingLeft() {
         return mPaddingLeft;
     }
 
+    /**
+     * Set the left padding of the X-axis
+     *
+     * @param paddingLeft The padding to set.
+     */
     public void setPaddingLeft(float paddingLeft) {
         mPaddingLeft = paddingLeft;
     }
 
+    /**
+     * @return The right padding of the X-axis
+     */
     public float getPaddingRight() {
         return mPaddingRight;
     }
 
+    /**
+     * Set the right padding of the X-axis
+     *
+     * @param paddingRight The padding to set
+     */
     public void setPaddingRight(float paddingRight) {
         mPaddingRight = paddingRight;
     }
 
+    /**
+     * Set the axis label formatter
+     *
+     * @param axisLabelFormatter the formatter to set.
+     */
     public void setAxisLabelFormatter(AxisLabelFormatter axisLabelFormatter) {
         mAxisLabelFormatter = axisLabelFormatter;
     }
@@ -115,6 +144,9 @@ public class XAxisRender extends AxisRender {
         }
     }
 
+    /**
+     * @return The X-axis it draws
+     */
     public XAxis getXAxis() {
         return getHost().getXAxis();
     }

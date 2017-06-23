@@ -4,7 +4,7 @@
 package com.parkingwang.hichart.data;
 
 /**
- * 点的位置。
+ * PointValue is the actual position of the {@link Entry} in canvas.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-20 0.1

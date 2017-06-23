@@ -8,13 +8,13 @@ import android.support.annotation.ColorInt;
 
 import com.parkingwang.hichart.data.DataRender;
 import com.parkingwang.hichart.data.Line;
-import com.parkingwang.hichart.view.LineChartView;
 import com.parkingwang.hichart.render.BaseRender;
+import com.parkingwang.hichart.view.LineChartView;
 
 import java.util.List;
 
 /**
- * 坐标绘制
+ * The render to draw axis.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-14 0.1
@@ -31,18 +31,38 @@ public abstract class AxisRender extends BaseRender {
         mTextPaint.setTextAlign(Paint.Align.CENTER);
     }
 
+    /**
+     * Set the text size of labels on axis.
+     *
+     * @param textSize The text size to set.
+     */
     public void setTextSize(float textSize) {
         mTextPaint.setTextSize(textSize);
     }
 
+    /**
+     * Set the text color of labels on axis
+     *
+     * @param textColor The text color to set.
+     */
     public void setTextColor(@ColorInt int textColor) {
         mTextPaint.setColor(textColor);
     }
 
+    /**
+     * Set the background color of axis.
+     *
+     * @param color The background color to set.
+     */
     public void setBackgroundColor(@ColorInt int color) {
         mBackgroundPaint.setColor(color);
     }
 
+    /**
+     * Set whether draw the background.
+     *
+     * @param drawBackground True to draw the background
+     */
     public void setDrawBackground(boolean drawBackground) {
         this.mDrawBackground = drawBackground;
     }

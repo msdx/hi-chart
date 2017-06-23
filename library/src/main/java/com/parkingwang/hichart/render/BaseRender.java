@@ -6,7 +6,7 @@ package com.parkingwang.hichart.render;
 import android.graphics.RectF;
 
 /**
- * Render基类。
+ * BaseRender is an abstract class that implement {@link Render}.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-14 0.1

@@ -15,6 +15,8 @@ import com.parkingwang.hichart.data.PointValue;
 import java.util.List;
 
 /**
+ * The render to draw drawable for highlight status.
+ *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-23 0.1
  */
@@ -23,7 +25,7 @@ public class HighlightDrawableRender extends HighlightRender {
     private final UpdateCallback mCallback;
 
     private boolean mSelectAllPoint;
-    private boolean mShowOnHighPoint;
+    private boolean mShowOnHighestPoint;
 
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
 
@@ -32,7 +34,7 @@ public class HighlightDrawableRender extends HighlightRender {
     }
 
     /**
-     * 是否选择所有点。
+     * Whether to highlight all the point in the same index in all lines.
      *
      * @param selectAllPoint true将把所有点绘制为实心点，false则只把选中点绘制为实心点。
      */
@@ -40,8 +42,13 @@ public class HighlightDrawableRender extends HighlightRender {
         mSelectAllPoint = selectAllPoint;
     }
 
-    public void setShowOnHighPoint(boolean showOnHighPoint) {
-        mShowOnHighPoint = showOnHighPoint;
+    /**
+     * Whether show the drawable near the highest point.
+     *
+     * @param showOnHighestPoint True to draw the drawable near the highest point, false otherwise.
+     */
+    public void setShowOnHighestPoint(boolean showOnHighestPoint) {
+        mShowOnHighestPoint = showOnHighestPoint;
     }
 
     @Override
@@ -62,7 +69,7 @@ public class HighlightDrawableRender extends HighlightRender {
             drawSolidCircle(canvas, lines.get(lineIndex), point);
         }
 
-        if (mShowOnHighPoint) {
+        if (mShowOnHighestPoint) {
             for (Line line : lines) {
                 PointValue it = line.getPointValues().get(pointIndex);
                 if (it.y < point.y) {

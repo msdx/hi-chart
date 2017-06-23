@@ -11,7 +11,7 @@ import android.text.TextUtils;
 import com.parkingwang.hichart.render.BaseRender;
 
 /**
- * 图表没有数据时的
+ * Draw the text in the center of the line chart if there has no data.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-14 0.1
@@ -34,18 +34,30 @@ public class EmptyTextRender extends BaseRender implements EmptyRender {
         canvas.drawText(mText, x, y, mPaint);
     }
 
+    /**
+     * @param text The text to draw.
+     */
     public void setText(String text) {
         mText = text;
     }
 
+    /**
+     * @param color The color of the text.
+     */
     public void setTextColor(@ColorInt int color) {
         mPaint.setColor(color);
     }
 
+    /**
+     * @param textSize The size of the text.
+     */
     public void setTextSize(float textSize) {
         mPaint.setTextSize(textSize);
     }
 
+    /**
+     * @return The paint to draw the text.
+     */
     public Paint getPaint() {
         return mPaint;
     }

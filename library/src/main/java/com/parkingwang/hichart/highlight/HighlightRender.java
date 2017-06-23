@@ -27,10 +27,16 @@ public abstract class HighlightRender extends BaseRender {
 
     private LineChartView mHost;
 
+    /**
+     * @return The enabled state of this render.
+     */
     public boolean isEnabled() {
         return mEnabled;
     }
 
+    /**
+     * @param enabled True to enable this render, false otherwise.
+     */
     public void setEnabled(boolean enabled) {
         mEnabled = enabled;
     }

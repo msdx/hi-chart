@@ -7,13 +7,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 
-import com.parkingwang.hichart.view.LineChartView;
 import com.parkingwang.hichart.render.BaseRender;
+import com.parkingwang.hichart.view.LineChartView;
 
 import java.util.List;
 
 /**
- * 数据区
+ * The render to draw the lines.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-14 0.1
@@ -119,6 +119,9 @@ public class DataRender extends BaseRender {
         mHost = view;
     }
 
+    /**
+     * @return The lines data of the line chart.
+     */
     protected List<Line> getData() {
         return mHost.getLineData();
     }

@@ -54,7 +54,6 @@ public class LineChartView extends FrameLayout {
     private float mInsetTop;
     private float mInsetRight;
     private float mInsetBottom;
-    private int mWidth;
 
     private PointValue mHighlightPointValue;
     private OnChartValueSelectedListener mOnChartValueSelectedListener;
@@ -108,18 +107,34 @@ public class LineChartView extends FrameLayout {
         return mAnimatorProgress;
     }
 
+    /**
+     * Whether to enable the animator.
+     *
+     * @param animated True to enable the animator, false otherwise.
+     */
     public void setAnimated(boolean animated) {
         mAnimated = animated;
     }
 
+    /**
+     * @param duration The animator time to set.
+     */
     public void setAnimatorTime(int duration) {
         mAnimator.setDuration(duration);
     }
 
+    /**
+     * @param delay The start delay time of the animator to set.
+     */
     public void setAnimatorStartDelay(int delay) {
         mAnimator.setStartDelay(delay);
     }
 
+    /**
+     * Set the interpolator into the animator.
+     *
+     * @param interpolator The interpolator to set.
+     */
     public void setInterpolator(TimeInterpolator interpolator) {
         mAnimator.setInterpolator(interpolator);
     }
@@ -235,10 +250,14 @@ public class LineChartView extends FrameLayout {
         mInsetBottom = bottom;
     }
 
+    /**
+     * Notify the data was changed.
+     * This method need be called after the line data or any one render was changed.
+     */
     public void notifyDataSetChanged() {
         mHighlightPointValue = null;
-        mXAxis.calcMinMax();
-        mYAxis.calcMinMax();
+        mXAxis.calcMinMaxIfNotCustom();
+        mYAxis.calcMinMaxIfNotCustom();
         updateRendersDrawRect();
         prepareLinePoints();
         if (mAnimated && !getLineData().isEmpty()) {
@@ -323,7 +342,6 @@ public class LineChartView extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (changed) {
-            mWidth = right - left;
             updateRendersDrawRect();
         }
     }
@@ -343,6 +361,11 @@ public class LineChartView extends FrameLayout {
         }
     }
 
+    /**
+     * Set whether disallow parent view to intercept touch event.
+     *
+     * @param disallow True to disallow, false otherwise.
+     */
     public void setDisallowParentIntercept(boolean disallow) {
         mDisallowParentIntercept = disallow;
     }

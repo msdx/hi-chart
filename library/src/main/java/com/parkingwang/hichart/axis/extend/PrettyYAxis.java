@@ -10,7 +10,7 @@ import com.parkingwang.hichart.data.Line;
 import java.util.List;
 
 /**
- * 数值显示友好的Y轴。
+ * Custom y-axis for smartly calculate the maximum and minimum values.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-16 0.1

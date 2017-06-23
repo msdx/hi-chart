@@ -9,7 +9,7 @@ import com.parkingwang.hichart.data.Line;
 import java.util.List;
 
 /**
- * 纵坐标轴
+ * Y-axis
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-16 0.1
@@ -24,10 +24,23 @@ public class YAxis extends Axis {
         setDrawCount(DEFAULT_SHOW_COUNT);
     }
 
+    /**
+     * Set the range ratio.
+     * Normally, the Y-axis will reserve some space for the maximum and minimum values to make show better.
+     * So this field was introduced to assist in calculating the maximum and minimum values.
+     * The actual maximum value of the Y-axis is: The maximum value in lines + range * ratio
+     * The actual minimum value of the Y-axis is: The minimum value in lines - range * ratio.
+     *
+     * @param ratio The range ratio to set.
+     */
     public void setRangeRatio(int ratio) {
         mRangeRatio = ratio;
     }
 
+    /**
+     * @return The current range ratio.
+     * @see #setRangeRatio(int)
+     */
     public float getRangeRatio() {
         return mRangeRatio;
     }

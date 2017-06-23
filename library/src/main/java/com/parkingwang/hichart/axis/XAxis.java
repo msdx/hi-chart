@@ -9,7 +9,7 @@ import com.parkingwang.hichart.data.Line;
 import java.util.List;
 
 /**
- * 横坐标
+ * X-axis.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
  * @since 2017-06-14 0.1
