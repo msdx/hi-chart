@@ -23,6 +23,7 @@ public class Line implements Iterable<Entry> {
 
     private final LineStyle mStyle = new LineStyle();
 
+    private String mTitle;
     private final List<Entry> mEntryList = new ArrayList<>();
     private List<PointValue> mPoints = new ArrayList<>();
 
@@ -59,6 +60,14 @@ public class Line implements Iterable<Entry> {
 
     public List<PointValue> getPointValues() {
         return mPoints;
+    }
+
+    public String getTitle() {
+        return mTitle;
+    }
+
+    public void setTitle(String title) {
+        mTitle = title;
     }
 
     @NonNull

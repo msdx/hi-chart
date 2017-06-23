@@ -33,6 +33,10 @@
                 android:id="@+id/random_fill_mode"
                 style="@style/Wrap.OnClick"
                 android:text="@string/random_fill_mode"/>
+            <Button
+                android:id="@+id/iop_highlight"
+                style="@style/Wrap.OnClick"
+                android:text="@string/iop_highlight"/>
         </com.wefika.flowlayout.FlowLayout>
 
         <com.parkingwang.hichart.view.LineChartView

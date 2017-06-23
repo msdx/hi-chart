@@ -25,4 +25,5 @@
     <string name="show_highlight">显示高亮</string>
     <string name="show_highlight_vertical">高亮竖线</string>
     <string name="show_highlight_horizontal">高亮横线</string>
+    <string name="iop_highlight">使用IOP高亮</string>
 </resources>

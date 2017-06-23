@@ -30,6 +30,7 @@ import com.parkingwang.hichart.data.LineStyle;
 import com.parkingwang.hichart.divider.Divider;
 import com.parkingwang.hichart.divider.DividersRender;
 import com.parkingwang.hichart.empty.EmptyTextRender;
+import com.parkingwang.hichart.highlight.HighlightDrawableRender;
 import com.parkingwang.hichart.highlight.HighlightLineRender;
 import com.parkingwang.hichart.highlight.HighlightRender;
 import com.parkingwang.hichart.view.LineChartView;
@@ -39,6 +40,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * @author 黄浩杭 (huanghaohang@parkingwang.com)
+ * @since 2017-06-14 0.1
+ */
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     private static final int ANIMATOR_TIME = 660;
     private static final int ANIMATOR_DELAY = 300;
@@ -162,6 +167,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             case R.id.random_fill_mode:
                 randomFillMode();
                 break;
+            case R.id.iop_highlight:
+                useIOPHighlight();
         }
     }
 
@@ -180,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         for (int i = 0; i < mColumn; i++) {
             line.add(new Entry(i, mRandom.nextInt(10000)));
         }
+        line.setTitle("第1条线");
 
         List<Line> lines = new ArrayList<>();
         lines.add(line);
@@ -195,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         int color = Color.rgb(mRandom.nextInt(255), mRandom.nextInt(255), mRandom.nextInt(255));
         style.setLineColor(color);
         style.setCircleColor(color);
+        line.setTitle("第" + (mLineChart.getLineData().size() + 1) + "条线");
         mLineChart.addLine(line);
     }
 
@@ -213,6 +222,19 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         for (Line line : lines) {
             line.getStyle().setFillMode(mode);
         }
+    }
+
+    private void useIOPHighlight() {
+        HighlightDrawable drawable = new HighlightDrawable(this);
+        drawable.setCircleMargin(dpToPx(4));
+        drawable.setTitleMargin(dpToPx(4));
+        drawable.setLineSpace(dpToPx(2));
+        drawable.setCircleRadius(dpToPx(3.5f));
+        drawable.setPadding(dpToPx(8));
+        HighlightDrawableRender render = new HighlightDrawableRender(drawable);
+        render.setSelectAllPoint(true);
+        render.setShowOnHighPoint(true);
+        mLineChart.setHighlightRender(render);
     }
 
     @NonNull
