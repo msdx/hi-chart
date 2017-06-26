@@ -26,8 +26,9 @@ public class FixedXAxisRender extends XAxisRender {
 
     @Override
     public void draw(Canvas canvas) {
+        float xAxisTop = mDrawRect.bottom - getHeight();
         if (mDrawBackground) {
-            canvas.drawRect(mDrawRect.left, mDrawRect.top, mDrawRect.right, mDrawRect.bottom, mBackgroundPaint);
+            canvas.drawRect(mDrawRect.left, xAxisTop, mDrawRect.right, mDrawRect.bottom, mBackgroundPaint);
         }
 
         List<String> labels = ((FixedXAxis) getXAxis()).getLabels();
@@ -43,7 +44,7 @@ public class FixedXAxisRender extends XAxisRender {
         final float start = Math.max(dataRect.left, mDrawRect.left + getPaddingLeft());
         final float end = Math.min(dataRect.right, mDrawRect.right - getPaddingRight());
 
-        final float textY = getHeight() / 2 - (mTextPaint.descent() + mTextPaint.ascent()) / 2;
+        final float textY = xAxisTop + getHeight() / 2 - (mTextPaint.descent() + mTextPaint.ascent()) / 2;
         final float interval = (size - 1.0f) / (drawCount - 1);
         final float drawWidth = end - start;
 

@@ -272,11 +272,12 @@ public class LineChartView extends FrameLayout {
 
     private void updateRendersDrawRect() {
         mDataRender.setDrawRect(mInsetLeft, 0,
-                getRight() - Math.max(mInsetRight, mYAxisRender.getWidth()), getHeight() - mXAxisRender.getHeight());
+                getRight() - Math.max(mInsetRight, mYAxisRender.getWidth()),
+                getHeight() - Math.max(mInsetBottom, mXAxisRender.getHeight()));
+        RectF dataRect = getDataRender().getDrawRect();
         RectF rectF = mDataRender.getDrawRect();
         mDividersRender.setDrawRect(0, 0, getWidth(), getHeight());
-        mXAxisRender.setDrawRect(0, 0, getWidth(), getHeight() - mDataRender.getDrawRect().bottom);
-        RectF dataRect = getDataRender().getDrawRect();
+        mXAxisRender.setDrawRect(0, dataRect.top + mInsetTop, getWidth(), getHeight());
         mYAxisRender.setDrawRect(dataRect.left, dataRect.top + mInsetTop, getWidth(), dataRect.bottom);
         if (mEmptyRender != null) {
             mEmptyRender.setDrawRect(rectF.left, rectF.top, rectF.right, rectF.bottom);
@@ -287,7 +288,7 @@ public class LineChartView extends FrameLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         mDividersRender.draw(canvas);
-        drawXAxis(canvas);
+        mXAxisRender.draw(canvas);
         mYAxisRender.draw(canvas);
         if (getLineData().isEmpty()) {
             drawEmpty(canvas);
@@ -321,13 +322,6 @@ public class LineChartView extends FrameLayout {
         for (Line line : getLineData()) {
             line.updatePointValues(minX, minY, left, bottom, ratioX, ratioY);
         }
-    }
-
-    private void drawXAxis(Canvas canvas) {
-        canvas.save();
-        canvas.translate(0, mDataRender.getDrawRect().bottom);
-        mXAxisRender.draw(canvas);
-        canvas.restore();
     }
 
     private void drawEmpty(Canvas canvas) {

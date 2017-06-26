@@ -93,13 +93,19 @@ public class XAxisRender extends AxisRender {
     @Override
     public void draw(Canvas canvas) {
         List<Line> data = getLineData();
-
         if (data.isEmpty()) {
             return;
         }
 
+        canvas.save();
+        canvas.translate(0, getDrawRect().bottom - getHeight());
+        drawXAxis(canvas);
+        canvas.restore();
+    }
+
+    private void drawXAxis(Canvas canvas) {
         if (mDrawBackground) {
-            canvas.drawRect(mDrawRect.left, mDrawRect.top, mDrawRect.right, mDrawRect.bottom, mBackgroundPaint);
+            canvas.drawRect(mDrawRect.left, 0, mDrawRect.right, getHeight(), mBackgroundPaint);
         }
 
         final int drawCount = getXAxis().getDrawCount();
