@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         setCheckBoxesListener(R.id.show_empty, R.id.top_divider, R.id.custom_x_axis,
                 R.id.hide_y_axis, R.id.hide_y_axis_label, R.id.pretty_y_axis, R.id.y_axis_offset,
-                R.id.y_axis_grid_line, R.id.enable_grid_line, R.id.enable_animator,
+                R.id.y_axis_grid_line, R.id.disable_grid_line, R.id.enable_animator,
                 R.id.animator_delay, R.id.fill_lines, R.id.random_fill_color, R.id.show_highlight,
                 R.id.show_highlight_vertical, R.id.show_highlight_horizontal);
     }
@@ -277,8 +277,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             case R.id.y_axis_grid_line:
                 drawYAxisGridLine(isChecked);
                 break;
-            case R.id.enable_grid_line:
-                enableGridDashedLine(isChecked);
+            case R.id.disable_grid_line:
+                disableGridDashedLine(isChecked);
                 break;
             case R.id.enable_animator:
                 enabledAnimator(isChecked);
@@ -389,8 +389,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
     }
 
-    private void enableGridDashedLine(boolean enabled) {
-        mLineChart.getYAxisRender().enabledGridDashedLine(enabled);
+    private void disableGridDashedLine(boolean disabled) {
+        mLineChart.getYAxisRender().enabledGridDashedLine(!disabled);
     }
 
     private void enabledAnimator(boolean enabled) {

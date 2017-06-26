@@ -82,7 +82,7 @@
                 style="@style/Wrap"
                 android:text="@string/y_axis_grid_line"/>
             <CheckBox
-                android:id="@+id/enable_grid_line"
+                android:id="@+id/disable_grid_line"
                 style="@style/Wrap"
                 android:text="@string/disable_grid_line"/>
             <CheckBox
