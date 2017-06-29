@@ -1,6 +1,7 @@
 HiChart 
 ===
 [ ![Download](https://api.bintray.com/packages/msdx/maven/HiChart/images/download.svg) ](https://bintray.com/msdx/maven/HiChart/_latestVersion)
+[![Methods](https://img.shields.io/badge/Methods%20and%20size-336%20|%2036%20KB-e91e63.svg)](http://www.methodscount.com/?lib=com.githang%3Astatus-bar-compat%3A0.5.2)
 
 HiChart 是一个显示折线图的图表库，目前只支持折线图的绘制。
 
@@ -32,4 +33,4 @@ compile 'com.githang.hichart:hichart-core:0.1-SNAPSHOT'
 
 ## JavaDoc
 
-https://msdx.github.io/hi-chart/index.html
+https://msdx.github.io/hi-chart
