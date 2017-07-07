@@ -62,7 +62,7 @@ public class LineChartView extends FrameLayout {
     private final ValueAnimator mAnimator = ValueAnimator.ofFloat(0, PROGRESS_COMPLETE);
     private boolean mAnimated = false;
 
-    private boolean mDisallowParentIntercept = true;
+    private boolean mDisallowParentIntercept = false;
 
     public LineChartView(Context context) {
         super(context);
