@@ -111,13 +111,13 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         yAxisRender.setTextSize(spToPx(rightConfig.textSize));
         yAxisRender.setLabelFormatter(new AxisLabelFormatter() {
             @Override
-            public String format(float value) {
+            public String format(float value, float max) {
                 if (value >= K_YUAN) {
                     return K_YUAN_FORMAT.format(value / K_YUAN) + "k";
                 } else if (value >= YUAN) {
                     return (int) value / YUAN + "";
                 } else if (value >= 0) {
-                    return YUAN_FORMAT.format(value / 100);
+                    return YUAN_FORMAT.format(max > 100 ? value / 100 : value);
                 } else {
                     return "";
                 }

@@ -32,7 +32,7 @@ public class YAxisRender extends AxisRender {
 
     private AxisLabelFormatter mLabelFormatter = new AxisLabelFormatter() {
         @Override
-        public String format(float value) {
+        public String format(float value, float max) {
             return DEFAULT_DECIMAL_FORMAT.format(value);
         }
     };
@@ -174,9 +174,10 @@ public class YAxisRender extends AxisRender {
             YAxis yAxis = getYAxis();
             int count = yAxis.getDrawCount();
             final float avg = yAxis.getRange() / (count - 1);
+            final float max = yAxis.getMaxValue();
             float axisValue = yAxis.getMinValue();
             for (int i = 0; i < count; i++) {
-                String label = mLabelFormatter.format(axisValue);
+                String label = mLabelFormatter.format(axisValue, max);
                 maxWidth = Math.max(maxWidth, mLabelPaint.measureText(label));
                 axisValue += avg;
             }
@@ -213,6 +214,7 @@ public class YAxisRender extends AxisRender {
         final float distance = (bottom - top) / (drawCount - 1);
         float lineY = bottom;
         final float avg = yAxis.getRange() / (drawCount - 1);
+        final float max = yAxis.getMaxValue();
         float axisValue = yAxis.getMinValue();
         final float textCenterOffsetY = (mLabelPaint.ascent() + mLabelPaint.descent()) / 2;
         final float textCenterX = (right + dataRight) / 2;// dataRight + (right - dataRight) / 2
@@ -222,7 +224,7 @@ public class YAxisRender extends AxisRender {
             }
 
             if (mDrawLabels) {
-                String label = mLabelFormatter.format(axisValue);
+                String label = mLabelFormatter.format(axisValue, max);
                 canvas.drawText(label, textCenterX, lineY - textCenterOffsetY, mLabelPaint);
                 axisValue += avg;
             }

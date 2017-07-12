@@ -47,12 +47,12 @@ public class YAxis extends Axis {
 
     @Override
     public void calcMinMax() {
-        float min = Float.MAX_VALUE;
-        float max = Float.MIN_VALUE;
+        float min = Integer.MAX_VALUE;
+        float max = Integer.MIN_VALUE;
         List<Line> lines = getData();
         for (Line line : lines) {
             for (Entry entry : line) {
-                int y = (int) entry.y;
+                float y = entry.y;
                 if (y > max) {
                     max = y;
                 }
@@ -68,6 +68,9 @@ public class YAxis extends Axis {
         }
         if (!mIsCustomMax) {
             mMaxValue = max + rangeSpace;
+        }
+        if (mMaxValue <= mMinValue) {
+            mMaxValue = mMinValue + getDrawCount() - 1;
         }
     }
 }

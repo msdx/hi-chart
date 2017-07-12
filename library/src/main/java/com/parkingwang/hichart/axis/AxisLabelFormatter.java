@@ -13,8 +13,9 @@ public interface AxisLabelFormatter {
     /**
      * Format the value into text.
      *
-     * @param value The value to format
+     * @param value    The value to format
+     * @param max The max value of the axis to format
      * @return The formatted text
      */
-    String format(float value);
+    String format(float value, float max);
 }

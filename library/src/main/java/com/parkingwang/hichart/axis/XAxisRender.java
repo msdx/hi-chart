@@ -23,7 +23,7 @@ public class XAxisRender extends AxisRender {
 
     protected AxisLabelFormatter mAxisLabelFormatter = new AxisLabelFormatter() {
         @Override
-        public String format(float value) {
+        public String format(float value, float max) {
             return LABEL_FORMATTER.format(value);
         }
     };
@@ -125,10 +125,11 @@ public class XAxisRender extends AxisRender {
         XAxis xAxis = getXAxis();
         final float avg = xAxis.getRange() / (drawCount - 1);
         final float min = xAxis.getMinValue();
+        final float max = xAxis.getMaxValue();
         float value = min;
 
         for (int i = 0; i < drawCount; i++) {
-            final String label = mAxisLabelFormatter.format(value);
+            final String label = mAxisLabelFormatter.format(value, max);
             final float halfTextWidth = mTextPaint.measureText(label) / 2;
 
             float textX = start + distance * i;
