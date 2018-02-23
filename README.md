@@ -19,10 +19,10 @@ allprojects {
 }
 ```
 
-添加依赖 ~~（将版本号改为当前最新版本）：~~
-~~```groovy~~
-~~compile 'com.githang.hichart:hichart-core:0.1'~~
-~~```~~
+添加依赖 （将版本号改为当前最新版本）：
+```groovy
+compile 'com.githang.hichart:hichart-core:0.1'
+```
 
 或使用SNAPSHOT版本：
 ```groovy
