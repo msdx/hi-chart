@@ -42,6 +42,7 @@ import java.util.Random;
 
 /**
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
+ * @version 0.2
  * @since 2017-06-14 0.1
  */
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
@@ -185,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         Line line = new Line();
         for (int i = 0; i < mColumn; i++) {
-            line.add(new Entry(i, mRandom.nextInt(10000)));
+            line.add(new Entry(i, mRandom.nextInt(10000), null, mRandom.nextBoolean()));
         }
         line.setTitle("第1条线");
 
