@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017. Xi'an iRain IOT Technology service CO., Ltd (ShenZhen). All Rights Reserved.
+ * Copyright (c) 2017-2018. Xi'an iRain IOT Technology service CO., Ltd (ShenZhen). All Rights Reserved.
  */
 package com.parkingwang.hichart.data;
 
@@ -19,6 +19,7 @@ import java.util.function.Consumer;
  * Line is an entries collection.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
+ * @version 0.2
  * @since 2017-06-20 0.1
  */
 public class Line implements Iterable<Entry> {
@@ -34,10 +35,19 @@ public class Line implements Iterable<Entry> {
     /**
      * Append an entry to line.
      *
-     * @param entry The entry to append
+     * @param entry The entry to be appended
      */
     public void add(Entry entry) {
         mEntryList.add(entry);
+    }
+
+    /**
+     * Appends all of the entries in the specified collection to the end of this list.
+     *
+     * @param entries The entries to be appended
+     */
+    public void addAll(List<Entry> entries) {
+        mEntryList.addAll(entries);
     }
 
     /**
@@ -86,7 +96,8 @@ public class Line implements Iterable<Entry> {
         List<PointValue> points = new ArrayList<>(this.size());
         for (Entry entry : mEntryList) {
             points.add(new PointValue(left + (entry.x - minX) * ratioX,
-                    bottom - (entry.y - minY) * ratioY));
+                    bottom - (entry.y - minY) * ratioY,
+                    entry.imaginary));
         }
         this.mPoints = points;
     }

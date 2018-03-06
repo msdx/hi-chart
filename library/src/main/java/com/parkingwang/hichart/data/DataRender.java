@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017. Xi'an iRain IOT Technology service CO., Ltd (ShenZhen). All Rights Reserved.
+ * Copyright (c) 2017-2018. Xi'an iRain IOT Technology service CO., Ltd (ShenZhen). All Rights Reserved.
  */
 package com.parkingwang.hichart.data;
 
@@ -16,6 +16,7 @@ import java.util.List;
  * The render to draw the lines.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
+ * @version 0.2
  * @since 2017-06-14 0.1
  */
 public class DataRender extends BaseRender {
@@ -67,15 +68,35 @@ public class DataRender extends BaseRender {
             mFillPaint.setColor(style.getFillColor());
             mFillPaint.setXfermode(style.getFillMode());
 
-            path.reset();
             List<PointValue> points = line.getPointValues();
-            path.moveTo(mDrawRect.left, mDrawRect.bottom);
+            boolean isEmpty = true;
+            PointValue previousPoint = null;
             for (PointValue point : points) {
-                path.lineTo(point.x, point.y);
+                if (!point.imaginary) {
+                    previousPoint = point;
+                    if (isEmpty) {
+                        path.reset();
+                        path.moveTo(point.x, mDrawRect.bottom);
+                        path.lineTo(point.x, point.y);
+                        isEmpty = false;
+                    } else {
+                        path.lineTo(point.x, point.y);
+                    }
+                } else {
+                    if (!isEmpty) {
+                        path.lineTo(previousPoint.x, mDrawRect.bottom);
+                        path.close();
+                        canvas.drawPath(path, mFillPaint);
+                        isEmpty = true;
+                        previousPoint = null;
+                    }
+                }
             }
-            path.lineTo(mDrawRect.right, mDrawRect.bottom);
-            path.close();
-            canvas.drawPath(path, mFillPaint);
+            if (previousPoint != null) {
+                path.lineTo(mDrawRect.right, mDrawRect.bottom);
+                path.close();
+                canvas.drawPath(path, mFillPaint);
+            }
         }
     }
 
@@ -96,7 +117,9 @@ public class DataRender extends BaseRender {
                     if (previous.x > endDraw) {
                         break;
                     }
-                    canvas.drawLine(previous.x, previous.y, point.x, point.y, mLinePaint);
+                    if (!previous.imaginary && !point.imaginary) {
+                        canvas.drawLine(previous.x, previous.y, point.x, point.y, mLinePaint);
+                    }
                     drawPoint(canvas, circleRadius, circleHoleRadius, previous);
                 }
                 previous = point;
@@ -110,9 +133,12 @@ public class DataRender extends BaseRender {
         }
     }
 
-    private void drawPoint(Canvas canvas, float circleRadius, float circleHoleRadius, PointValue previous) {
-        canvas.drawCircle(previous.x, previous.y, circleRadius, mCirclePaint);
-        canvas.drawCircle(previous.x, previous.y, circleHoleRadius, mCircleHolePaint);
+    private void drawPoint(Canvas canvas, float circleRadius, float circleHoleRadius, PointValue point) {
+        if (point.imaginary) {
+            return;
+        }
+        canvas.drawCircle(point.x, point.y, circleRadius, mCirclePaint);
+        canvas.drawCircle(point.x, point.y, circleHoleRadius, mCircleHolePaint);
     }
 
     public void attachTo(LineChartView view) {

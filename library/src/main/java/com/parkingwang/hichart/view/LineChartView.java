@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017. Xi'an iRain IOT Technology service CO., Ltd (ShenZhen). All Rights Reserved.
+ * Copyright (c) 2017-2018. Xi'an iRain IOT Technology service CO., Ltd (ShenZhen). All Rights Reserved.
  */
 
 package com.parkingwang.hichart.view;
@@ -33,6 +33,7 @@ import java.util.List;
 
 /**
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
+ * @version 0.2
  * @since 2017-04-18 0.1
  */
 public class LineChartView extends FrameLayout {
@@ -390,6 +391,10 @@ public class LineChartView extends FrameLayout {
             List<PointValue> points = lines.get(i).getPointValues();
             for (int j = 0, size = points.size(); j < size; j++) {
                 PointValue point = points.get(j);
+                if (point.imaginary) {
+                    // imaginary point
+                    continue;
+                }
                 float distance = Math.abs(point.x - x);
                 if (distance > minDistance) {
                     continue;
