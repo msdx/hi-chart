@@ -27,7 +27,7 @@ public class Line implements Iterable<Entry> {
     private final List<Entry> mEntryList = new ArrayList<>();
     private List<PointValue> mPoints = new ArrayList<>();
 
-    private final LineStyle mStyle = new LineStyle();
+    private LineStyle mStyle = new LineStyle();
 
     private String mTitle;
     private Object mTag;
@@ -72,6 +72,24 @@ public class Line implements Iterable<Entry> {
      */
     public int size() {
         return mEntryList.size();
+    }
+
+    /**
+     * Returns <tt>true</tt> if this list contains no elements.
+     *
+     * @return <tt>true</tt> if this list contains no elements
+     */
+    public boolean isEmpty() {
+        return mEntryList.isEmpty();
+    }
+
+    /**
+     * Set a line style for this line.
+     *
+     * @param style The style to be set
+     */
+    public void setStyle(LineStyle style) {
+        mStyle = style;
     }
 
     /**
