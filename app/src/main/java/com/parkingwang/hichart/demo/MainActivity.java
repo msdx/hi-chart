@@ -323,10 +323,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private void showTopDivider(boolean show) {
         DividersRender render = mLineChart.getDividersRender();
         if (show) {
-            Divider divider = new Divider();
-            divider.setPadding(dpToPx(12));
-            divider.setWidth(2);
-            divider.setColor(Color.parseColor("#4DFFFFFF"));
+            Divider divider = new Divider(Color.parseColor("#4DFFFFFF"), 2, dpToPx(12));
             render.setTopDivider(divider);
         } else {
             render.setTopDivider(null);

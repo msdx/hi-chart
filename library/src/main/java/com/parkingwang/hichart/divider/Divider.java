@@ -9,13 +9,25 @@ import android.support.annotation.ColorInt;
  * The divider of the line chart view.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
+ * @version 0.2
  * @since 2017-06-14 0.1
  */
 public class Divider {
-    private float mPadding;
     @ColorInt
     private int mColor;
-    private int mWidth;
+    private float mWidth;
+    private float mPadding;
+
+    public Divider(int color, float width) {
+        mColor = color;
+        mWidth = width;
+    }
+
+    public Divider(int color, float width, float padding) {
+        mColor = color;
+        mWidth = width;
+        mPadding = padding;
+    }
 
     /**
      * @return The padding of the divider.
@@ -54,14 +66,14 @@ public class Divider {
     /**
      * @return The width of the vertical divider or the height of the horizontal divider.
      */
-    public int getWidth() {
+    public float getWidth() {
         return mWidth;
     }
 
     /**
      * @param width The width to set into the divider.
      */
-    public void setWidth(int width) {
+    public void setWidth(float width) {
         mWidth = width;
     }
 }
