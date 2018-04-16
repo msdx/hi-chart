@@ -24,6 +24,9 @@ public class PrettyYAxis extends YAxis {
 
         List<Line> lines = getData();
         for (Line line : lines) {
+            if (line.getDependentYAxis() != getAxisGravity()) {
+                continue;
+            }
             for (Entry entry : line) {
                 if (entry.y > max) {
                     max = (int) entry.y;

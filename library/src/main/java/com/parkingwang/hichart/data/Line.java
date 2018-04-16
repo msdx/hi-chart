@@ -7,6 +7,7 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
+import com.parkingwang.hichart.axis.YAxisGravity;
 import com.parkingwang.hichart.view.LineChartView;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.function.Consumer;
  * Line is an entries collection.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
- * @version 0.2
+ * @version 0.3
  * @since 2017-06-20 0.1
  */
 public class Line implements Iterable<Entry> {
@@ -31,6 +32,8 @@ public class Line implements Iterable<Entry> {
 
     private String mTitle;
     private Object mTag;
+
+    private YAxisGravity mDependentYAxis;
 
     /**
      * Append an entry to line.
@@ -173,5 +176,25 @@ public class Line implements Iterable<Entry> {
      */
     public void setTag(Object tag) {
         mTag = tag;
+    }
+
+    /**
+     * Return the YAxisGravity of the yAxis that this line depends on
+     *
+     * @return The YAxisGravity of the yAxis which this line depends on
+     * @since 0.3
+     */
+    public YAxisGravity getDependentYAxis() {
+        return mDependentYAxis;
+    }
+
+    /**
+     * Set the YAxisGravity of the dependent yAxis
+     *
+     * @param dependentYAxis The YAxisGravity of the dependent yAxis
+     * @since 0.3
+     */
+    public void setDependentYAxis(YAxisGravity dependentYAxis) {
+        mDependentYAxis = dependentYAxis;
     }
 }

@@ -3,6 +3,8 @@
  */
 package com.parkingwang.hichart.axis;
 
+import android.support.annotation.NonNull;
+
 import com.parkingwang.hichart.data.Entry;
 import com.parkingwang.hichart.data.Line;
 
@@ -12,6 +14,7 @@ import java.util.List;
  * Y-axis
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
+ * @version 0.3
  * @since 2017-06-16 0.1
  */
 public class YAxis extends Axis {
@@ -20,8 +23,24 @@ public class YAxis extends Axis {
 
     private float mRangeRatio = DEFAULT_RANGE_RATIO;
 
+    private YAxisGravity mAxisGravity = YAxisGravity.RIGHT;
+
     public YAxis() {
         setDrawCount(DEFAULT_SHOW_COUNT);
+    }
+
+    /**
+     * @since 0.3
+     */
+    public YAxisGravity getAxisGravity() {
+        return mAxisGravity;
+    }
+
+    /**
+     * @since 0.3
+     */
+    public void setAxisGravity(@NonNull YAxisGravity axisGravity) {
+        mAxisGravity = axisGravity;
     }
 
     /**
@@ -51,6 +70,9 @@ public class YAxis extends Axis {
         float max = Integer.MIN_VALUE;
         List<Line> lines = getData();
         for (Line line : lines) {
+            if (line.getDependentYAxis() != getAxisGravity()) {
+                continue;
+            }
             for (Entry entry : line) {
                 float y = entry.y;
                 if (y > max) {

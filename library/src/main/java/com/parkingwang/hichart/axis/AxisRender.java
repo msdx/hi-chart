@@ -31,12 +31,16 @@ public abstract class AxisRender extends BaseRender {
         mTextPaint.setTextAlign(Paint.Align.CENTER);
     }
 
+    protected Paint getTextPaint() {
+        return mTextPaint;
+    }
+
     /**
      * Set the text size of labels on axis.
      *
      * @param textSize The text size to set.
      */
-    public void setTextSize(float textSize) {
+    public final void setTextSize(float textSize) {
         mTextPaint.setTextSize(textSize);
     }
 
@@ -45,7 +49,7 @@ public abstract class AxisRender extends BaseRender {
      *
      * @param textColor The text color to set.
      */
-    public void setTextColor(@ColorInt int textColor) {
+    public final void setTextColor(@ColorInt int textColor) {
         mTextPaint.setColor(textColor);
     }
 

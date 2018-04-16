@@ -31,7 +31,8 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:support-annotations:27.1.0'
+    implementation 'com.android.support:support-annotations:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
 }
 
 if (hasProperty("bintrayUser") || hasProperty("BINTRAY_USER")) {

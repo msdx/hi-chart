@@ -10,6 +10,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
+import android.support.v4.util.ArrayMap;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
@@ -17,6 +18,7 @@ import android.widget.FrameLayout;
 import com.parkingwang.hichart.axis.XAxis;
 import com.parkingwang.hichart.axis.XAxisRender;
 import com.parkingwang.hichart.axis.YAxis;
+import com.parkingwang.hichart.axis.YAxisGravity;
 import com.parkingwang.hichart.axis.YAxisRender;
 import com.parkingwang.hichart.data.DataRender;
 import com.parkingwang.hichart.data.Line;
@@ -28,12 +30,13 @@ import com.parkingwang.hichart.highlight.HighlightRender;
 import com.parkingwang.hichart.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 /**
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
- * @version 0.2
+ * @version 0.3
  * @since 2017-04-18 0.1
  */
 public class LineChartView extends FrameLayout {
@@ -48,8 +51,9 @@ public class LineChartView extends FrameLayout {
     private HighlightRender mHighlightRender;
     private XAxis mXAxis;
     private XAxisRender mXAxisRender;
-    private YAxis mYAxis;
-    private YAxisRender mYAxisRender;
+
+    private ArrayMap<YAxisGravity, YAxis> mYAxisMap = new ArrayMap<>(2);
+    private ArrayMap<YAxisGravity, YAxisRender> mYAxisRenderMap = new ArrayMap<>(2);
 
     private float mInsetLeft;
     private float mInsetTop;
@@ -86,8 +90,8 @@ public class LineChartView extends FrameLayout {
         setHighlightRender(new HighlightLineRender());
         setXAxis(new XAxis());
         setXAxisRender(new XAxisRender());
-        setYAxis(new YAxis());
-        setYAxisRender(new YAxisRender());
+        putYAxis(new YAxis());
+        putYAxisRender(new YAxisRender());
 
         mAnimator.setDuration(DEFAULT_ANIMATOR_TIME);
         initAnimatorListener();
@@ -192,21 +196,42 @@ public class LineChartView extends FrameLayout {
     }
 
     public YAxis getYAxis() {
-        return mYAxis;
+        return mYAxisMap.valueAt(0);
     }
 
-    public void setYAxis(YAxis axis) {
-        mYAxis = axis;
-        mYAxis.attachTo(this);
+    /**
+     * Return the yAxis on the specified location
+     *
+     * @param gravity The location of the yAxis
+     * @return The yAxis on the specified location
+     * @since 0.3
+     */
+    public YAxis getYAxis(YAxisGravity gravity) {
+        return mYAxisMap.get(gravity);
+    }
+
+    public void putYAxis(YAxis axis) {
+        axis.attachTo(this);
+        mYAxisMap.put(axis.getAxisGravity(), axis);
     }
 
     public YAxisRender getYAxisRender() {
-        return mYAxisRender;
+        return mYAxisRenderMap.valueAt(0);
     }
 
-    public void setYAxisRender(YAxisRender YAxisRender) {
-        mYAxisRender = YAxisRender;
-        mYAxisRender.attachTo(this);
+    /**
+     * Return the yAxisRender with the specified location
+     *
+     * @param gravity The location of the yAxisRender
+     * @return The yAxisRender
+     */
+    public YAxisRender getYAxisRender(YAxisGravity gravity) {
+        return mYAxisRenderMap.get(gravity);
+    }
+
+    public void putYAxisRender(YAxisRender yAxisRender) {
+        mYAxisRenderMap.put(yAxisRender.getAxisGravity(), yAxisRender);
+        yAxisRender.attachTo(this);
     }
 
     public List<Line> getLineData() {
@@ -258,7 +283,10 @@ public class LineChartView extends FrameLayout {
     public void notifyDataSetChanged() {
         mHighlightPointValue = null;
         mXAxis.calcMinMaxIfNotCustom();
-        mYAxis.calcMinMaxIfNotCustom();
+        Collection<YAxis> yAxises = mYAxisMap.values();
+        for (YAxis yAxis : yAxises) {
+            yAxis.calcMinMaxIfNotCustom();
+        }
         updateRendersDrawRect();
         prepareLinePoints();
         if (mAnimated && !getLineData().isEmpty()) {
@@ -272,14 +300,35 @@ public class LineChartView extends FrameLayout {
     }
 
     private void updateRendersDrawRect() {
-        mDataRender.setDrawRect(mInsetLeft, 0,
-                getRight() - Math.max(mInsetRight, mYAxisRender.getWidth()),
+        final YAxisRender leftAxisRender = getYAxisRender(YAxisGravity.LEFT);
+        final float insetLeft;
+        if (leftAxisRender == null) {
+            insetLeft = mInsetLeft;
+        } else {
+            insetLeft = Math.max(mInsetLeft, leftAxisRender.getWidth());
+        }
+
+        final YAxisRender rightAxisRender = getYAxisRender(YAxisGravity.RIGHT);
+        final float insetRight;
+        if (rightAxisRender == null) {
+            insetRight = mInsetRight;
+        } else {
+            insetRight = Math.max(mInsetRight, rightAxisRender.getWidth());
+        }
+        mDataRender.setDrawRect(insetLeft, 0, getRight() - insetRight,
                 getHeight() - Math.max(mInsetBottom, mXAxisRender.getHeight()));
         RectF dataRect = getDataRender().getDrawRect();
         RectF rectF = mDataRender.getDrawRect();
         mDividersRender.setDrawRect(0, 0, getWidth(), getHeight());
         mXAxisRender.setDrawRect(0, dataRect.top + mInsetTop, getWidth(), getHeight());
-        mYAxisRender.setDrawRect(dataRect.left, dataRect.top + mInsetTop, getWidth(), dataRect.bottom);
+        Collection<YAxisRender> yAxisRenders = mYAxisRenderMap.values();
+        for (YAxisRender yAxisRender : yAxisRenders) {
+            if (yAxisRender.getAxisGravity() == YAxisGravity.RIGHT) {
+                yAxisRender.setDrawRect(dataRect.left, dataRect.top + mInsetTop, getWidth(), dataRect.bottom);
+            } else {
+                yAxisRender.setDrawRect(0, dataRect.top + mInsetTop, getWidth() - insetRight, dataRect.bottom);
+            }
+        }
         if (mEmptyRender != null) {
             mEmptyRender.setDrawRect(rectF.left, rectF.top, rectF.right, rectF.bottom);
         }
@@ -290,7 +339,10 @@ public class LineChartView extends FrameLayout {
     protected void onDraw(Canvas canvas) {
         mDividersRender.draw(canvas);
         mXAxisRender.draw(canvas);
-        mYAxisRender.draw(canvas);
+        Collection<YAxisRender> yAxisRenders = mYAxisRenderMap.values();
+        for (YAxisRender yAxisRender : yAxisRenders) {
+            yAxisRender.draw(canvas);
+        }
         if (getLineData().isEmpty()) {
             drawEmpty(canvas);
         } else {
@@ -302,25 +354,37 @@ public class LineChartView extends FrameLayout {
     }
 
     private void prepareLinePoints() {
-        if (mXAxis.getRange() == 0 || mYAxis.getRange() == 0) {
+        final YAxis firstYAxis = mYAxisMap.valueAt(0);
+        if (mXAxis.getRange() == 0 || firstYAxis.getRange() == 0) {
             return;
         }
-        RectF yAxisDrawRect = mYAxisRender.getDrawRect();
-        RectF drawRect = mDataRender.getDrawRect();
-        float left = drawRect.left;
-        float right = drawRect.right;
-        float top = yAxisDrawRect.top;
-        float bottom = yAxisDrawRect.bottom - mYAxisRender.getInsetBottom();
+        final YAxisRender firstYAxisRender = getYAxisRender(firstYAxis.getAxisGravity());
+        final RectF yAxisDrawRect = firstYAxisRender.getDrawRect();
+        final RectF drawRect = mDataRender.getDrawRect();
+        final float left = drawRect.left;
+        final float right = drawRect.right;
+        final float top = yAxisDrawRect.top;
+        final float bottom = yAxisDrawRect.bottom - firstYAxisRender.getInsetBottom();
 
-        float minX = mXAxis.getMinValue();
-        float maxX = mXAxis.getMaxValue();
-        float minY = mYAxis.getMinValue();
-        float maxY = mYAxis.getMaxValue();
+        final float minX = mXAxis.getMinValue();
+        final float maxX = mXAxis.getMaxValue();
+        final float ratioX = (right - left) / (maxX - minX);
 
-        float ratioX = (right - left) / (maxX - minX);
-        float ratioY = (bottom - top) / (maxY - minY);
-
+        float minY;
+        float maxY;
+        float ratioY;
         for (Line line : getLineData()) {
+            final YAxisGravity gravity = line.getDependentYAxis();
+            if (gravity == null) {
+                minY = firstYAxis.getMinValue();
+                maxY = firstYAxis.getMaxValue();
+            } else {
+                final YAxis yAxis = getYAxis(gravity);
+                minY = yAxis.getMinValue();
+                maxY = yAxis.getMaxValue();
+            }
+
+            ratioY = (bottom - top) / (maxY - minY);
             line.updatePointValues(minX, minY, left, bottom, ratioX, ratioY);
         }
     }

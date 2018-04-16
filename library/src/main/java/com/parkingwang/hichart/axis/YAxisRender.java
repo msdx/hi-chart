@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.support.annotation.NonNull;
 
 import com.parkingwang.hichart.util.DimenUtil;
 
@@ -16,6 +17,7 @@ import java.text.DecimalFormat;
  * The render to draw Y-axis.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
+ * @version 0.3
  * @since 2017-06-16 0.1
  */
 public class YAxisRender extends AxisRender {
@@ -44,7 +46,8 @@ public class YAxisRender extends AxisRender {
     private float mInsetBottom = 0;
 
     private Paint mGridLinePaint;
-    private Paint mLabelPaint;
+
+    private YAxisGravity mAxisGravity = YAxisGravity.RIGHT;
 
     private int mWidth;
 
@@ -54,10 +57,22 @@ public class YAxisRender extends AxisRender {
         mGridLinePaint.setStrokeWidth(DEFAULT_GRID_LINE_WIDTH);
         mGridLinePaint.setStyle(Paint.Style.FILL);
 
-        mLabelPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-        mLabelPaint.setTextAlign(Paint.Align.CENTER);
-        mLabelPaint.setColor(DEFAULT_TEXT_COLOR);
-        mLabelPaint.setTextSize(DEFAULT_TEXT_SIZE);
+        setTextColor(DEFAULT_TEXT_COLOR);
+        setTextSize(DEFAULT_TEXT_SIZE);
+    }
+
+    /**
+     * @since 0.3
+     */
+    public YAxisGravity getAxisGravity() {
+        return mAxisGravity;
+    }
+
+    /**
+     * @since 0.3
+     */
+    public void setAxisGravity(@NonNull YAxisGravity axisGravity) {
+        mAxisGravity = axisGravity;
     }
 
     /**
@@ -76,24 +91,6 @@ public class YAxisRender extends AxisRender {
      */
     public void setDrawLabels(boolean drawLabels) {
         mDrawLabels = drawLabels;
-    }
-
-    /**
-     * Set the text color of the labels.
-     *
-     * @param textColor The text color to set.
-     */
-    public void setTextColor(int textColor) {
-        mLabelPaint.setColor(textColor);
-    }
-
-    /**
-     * Set the text size of the labels.
-     *
-     * @param textSize The text size to set.
-     */
-    public void setTextSize(float textSize) {
-        mLabelPaint.setTextSize(textSize);
     }
 
     /**
@@ -176,9 +173,10 @@ public class YAxisRender extends AxisRender {
             final float avg = yAxis.getRange() / (count - 1);
             final float max = yAxis.getMaxValue();
             float axisValue = yAxis.getMinValue();
+            final Paint textPaint = getTextPaint();
             for (int i = 0; i < count; i++) {
                 String label = mLabelFormatter.format(axisValue, max);
-                maxWidth = Math.max(maxWidth, mLabelPaint.measureText(label));
+                maxWidth = Math.max(maxWidth, textPaint.measureText(label));
                 axisValue += avg;
             }
             return maxWidth + mLabelPadding * 2;
@@ -202,13 +200,14 @@ public class YAxisRender extends AxisRender {
             return;
         }
 
-        float left = mDrawRect.left;
         float right = mDrawRect.right;
         float top = mDrawRect.top;
         float bottom = mDrawRect.bottom - mInsetBottom;
 
         float dataRight = getDataRender().getDrawRect().right;
+        float dataLeft = getDataRender().getDrawRect().left;
 
+        final Paint textPaint = getTextPaint();
         final YAxis yAxis = getYAxis();
         final int drawCount = yAxis.getDrawCount();
         final float distance = (bottom - top) / (drawCount - 1);
@@ -216,16 +215,18 @@ public class YAxisRender extends AxisRender {
         final float avg = yAxis.getRange() / (drawCount - 1);
         final float max = yAxis.getMaxValue();
         float axisValue = yAxis.getMinValue();
-        final float textCenterOffsetY = (mLabelPaint.ascent() + mLabelPaint.descent()) / 2;
-        final float textCenterX = (right + dataRight) / 2;// dataRight + (right - dataRight) / 2
+        final float textCenterOffsetY = (textPaint.ascent() + textPaint.descent()) / 2;
+        // dataRight + (right - dataRight) / 2
+        final float textCenterX = (mAxisGravity == YAxisGravity.LEFT)
+                ? dataLeft / 2 : (right + dataRight) / 2;
         for (int i = 0; i < drawCount; i++) {
             if (mEnabledGridLine) {
-                canvas.drawLine(left, lineY, dataRight, lineY, mGridLinePaint);
+                canvas.drawLine(dataLeft, lineY, dataRight, lineY, mGridLinePaint);
             }
 
             if (mDrawLabels) {
                 String label = mLabelFormatter.format(axisValue, max);
-                canvas.drawText(label, textCenterX, lineY - textCenterOffsetY, mLabelPaint);
+                canvas.drawText(label, textCenterX, lineY - textCenterOffsetY, textPaint);
                 axisValue += avg;
             }
 
@@ -237,6 +238,6 @@ public class YAxisRender extends AxisRender {
      * @return The Y-axis of the line chart.
      */
     protected YAxis getYAxis() {
-        return getHost().getYAxis();
+        return getHost().getYAxis(mAxisGravity);
     }
 }

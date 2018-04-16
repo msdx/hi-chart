@@ -14,6 +14,7 @@ import android.graphics.RectF;
 public abstract class BaseRender implements Render {
     protected RectF mDrawRect = new RectF();
 
+    @Override
     public RectF getDrawRect() {
         return mDrawRect;
     }

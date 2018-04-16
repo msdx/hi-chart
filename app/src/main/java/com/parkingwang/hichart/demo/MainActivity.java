@@ -20,6 +20,7 @@ import com.parkingwang.hichart.axis.AxisLabelFormatter;
 import com.parkingwang.hichart.axis.XAxis;
 import com.parkingwang.hichart.axis.XAxisRender;
 import com.parkingwang.hichart.axis.YAxis;
+import com.parkingwang.hichart.axis.YAxisGravity;
 import com.parkingwang.hichart.axis.YAxisRender;
 import com.parkingwang.hichart.axis.extend.FixedXAxis;
 import com.parkingwang.hichart.axis.extend.FixedXAxisRender;
@@ -205,7 +206,30 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         style.setLineColor(color);
         style.setCircleColor(color);
         line.setTitle("第" + (mLineChart.getLineData().size() + 1) + "条线");
+        YAxisGravity gravity = mLineChart.getLineData().size() % 2 == 1 ? YAxisGravity.LEFT : YAxisGravity.RIGHT;
+        line.setDependentYAxis(gravity);
+        if (gravity == YAxisGravity.LEFT) {
+            createLeftYAxisIfNeed();
+        }
         mLineChart.addLine(line);
+    }
+
+    private void createLeftYAxisIfNeed() {
+        if (mLineChart.getYAxis(YAxisGravity.LEFT) == null) {
+            final YAxis yAxis = new PrettyYAxis();
+            yAxis.setAxisGravity(YAxisGravity.LEFT);
+            yAxis.setDrawCount(4);
+            mLineChart.putYAxis(yAxis);
+            yAxis.setMinValue(0);
+            yAxis.setMaxValue(10000);
+        }
+
+        if (mLineChart.getYAxisRender(YAxisGravity.LEFT) == null) {
+            final YAxisRender leftRender = new YAxisRender();
+            leftRender.enabledGridDashedLine(false);
+            leftRender.setAxisGravity(YAxisGravity.LEFT);
+            mLineChart.putYAxisRender(leftRender);
+        }
     }
 
     private void removeLine() {
@@ -369,7 +393,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private void showPrettyYAxis(boolean pretty) {
         YAxis yAxis = pretty ? new PrettyYAxis() : new YAxis();
         yAxis.setDrawCount(4);
-        mLineChart.setYAxis(yAxis);
+        mLineChart.putYAxis(yAxis);
         yAxis.calcMinMaxIfNotCustom();
         yAxis.setMinValue(0);
     }
