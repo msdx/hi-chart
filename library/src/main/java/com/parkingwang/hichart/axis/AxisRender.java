@@ -31,7 +31,13 @@ public abstract class AxisRender extends BaseRender {
         mTextPaint.setTextAlign(Paint.Align.CENTER);
     }
 
-    protected Paint getTextPaint() {
+    /**
+     * Return the text paint to draw axis label
+     *
+     * @return The text paint
+     * @since 0.3
+     */
+    public Paint getTextPaint() {
         return mTextPaint;
     }
 

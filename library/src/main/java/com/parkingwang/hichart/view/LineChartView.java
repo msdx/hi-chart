@@ -28,6 +28,7 @@ import com.parkingwang.hichart.empty.EmptyRender;
 import com.parkingwang.hichart.highlight.HighlightLineRender;
 import com.parkingwang.hichart.highlight.HighlightRender;
 import com.parkingwang.hichart.listener.OnChartValueSelectedListener;
+import com.parkingwang.hichart.overlay.OverlayRender;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,6 +55,8 @@ public class LineChartView extends FrameLayout {
 
     private ArrayMap<YAxisGravity, YAxis> mYAxisMap = new ArrayMap<>(2);
     private ArrayMap<YAxisGravity, YAxisRender> mYAxisRenderMap = new ArrayMap<>(2);
+
+    private OverlayRender mOverlayRender;
 
     private float mInsetLeft;
     private float mInsetTop;
@@ -333,6 +336,9 @@ public class LineChartView extends FrameLayout {
             mEmptyRender.setDrawRect(rectF.left, rectF.top, rectF.right, rectF.bottom);
         }
         mHighlightRender.setDrawRect(rectF.left, rectF.top, rectF.right, rectF.bottom);
+        if (mOverlayRender != null) {
+            mOverlayRender.setDrawRect(0, 0, getWidth(), getHeight());
+        }
     }
 
     @Override
@@ -350,6 +356,10 @@ public class LineChartView extends FrameLayout {
             if (mAnimatorProgress == PROGRESS_COMPLETE && mHighlightPointValue != null) {
                 mHighlightRender.draw(canvas);
             }
+        }
+
+        if (mOverlayRender != null) {
+            mOverlayRender.draw(canvas);
         }
     }
 
@@ -496,5 +506,16 @@ public class LineChartView extends FrameLayout {
 
     public void setOnChartValueSelectedListener(OnChartValueSelectedListener listener) {
         mOnChartValueSelectedListener = listener;
+    }
+
+    /**
+     * Set an overlay render to custom drawing
+     *
+     * @param overlayRender The overlay to set
+     * @since 0.3
+     */
+    public void setOverlayRender(OverlayRender overlayRender) {
+        mOverlayRender = overlayRender;
+        overlayRender.setHost(this);
     }
 }
