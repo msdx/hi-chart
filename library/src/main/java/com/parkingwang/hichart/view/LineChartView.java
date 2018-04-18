@@ -9,6 +9,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.RectF;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
 import android.util.AttributeSet;
@@ -218,6 +219,10 @@ public class LineChartView extends FrameLayout {
         mYAxisMap.put(axis.getAxisGravity(), axis);
     }
 
+    public void removeYAxis(@NonNull YAxisGravity gravity) {
+        mYAxisMap.remove(gravity);
+    }
+
     public YAxisRender getYAxisRender() {
         return mYAxisRenderMap.valueAt(0);
     }
@@ -235,6 +240,10 @@ public class LineChartView extends FrameLayout {
     public void putYAxisRender(YAxisRender yAxisRender) {
         mYAxisRenderMap.put(yAxisRender.getAxisGravity(), yAxisRender);
         yAxisRender.attachTo(this);
+    }
+
+    public void removeYAxisRender(@NonNull YAxisGravity gravity) {
+        mYAxisRenderMap.remove(gravity);
     }
 
     public List<Line> getLineData() {
@@ -418,6 +427,7 @@ public class LineChartView extends FrameLayout {
     public void highlightValue(int lineIndex, int pointIndex) {
         if (lineIndex < 0 || pointIndex < 0) {
             cancelHighlightValue();
+            return;
         }
         onHighlightValue(lineIndex, pointIndex, getLineData().get(lineIndex).getPointValues().get(pointIndex));
     }

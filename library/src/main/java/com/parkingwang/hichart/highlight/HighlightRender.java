@@ -5,6 +5,7 @@
 package com.parkingwang.hichart.highlight;
 
 import android.graphics.Canvas;
+import android.graphics.RectF;
 
 import com.parkingwang.hichart.data.Line;
 import com.parkingwang.hichart.data.PointValue;
@@ -65,6 +66,14 @@ public abstract class HighlightRender extends BaseRender {
 
     public List<Line> getData() {
         return mHost.getLineData();
+    }
+
+    public RectF getDataRectf() {
+        return mHost.getDataRender().getDrawRect();
+    }
+
+    public LineChartView getHost() {
+        return mHost;
     }
 
     @Override

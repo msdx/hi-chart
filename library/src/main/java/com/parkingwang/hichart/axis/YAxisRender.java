@@ -76,6 +76,16 @@ public class YAxisRender extends AxisRender {
     }
 
     /**
+     * Return if the render is enabled
+     *
+     * @return If this render is enabled
+     * @since 0.3
+     */
+    public boolean isEnabled() {
+        return mEnabled;
+    }
+
+    /**
      * Set the enabled state to this render.
      *
      * @param enabled True to draw Y-axis, false otherwise.
