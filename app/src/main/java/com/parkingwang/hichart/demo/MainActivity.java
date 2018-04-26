@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         mLineChart.setLineChartInsets(offsetLeft, offsetTop, offsetRight, offsetBottom);
 
         mLineChart.setAnimatorTime(ANIMATOR_TIME);
+        mLineChart.setInterceptEventWhenHorizontalScroll(true);
     }
 
     public void setLabelFormatter(LabelFormatter labelFormatter) {
@@ -171,6 +172,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 break;
             case R.id.iop_highlight:
                 useIOPHighlight();
+                break;
+            default:
         }
     }
 

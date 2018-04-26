@@ -8,6 +8,7 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -72,10 +73,11 @@ public class LineChartView extends FrameLayout {
     private boolean mAnimated = false;
 
     private boolean mDisallowParentIntercept = false;
+    private boolean mInterceptEventWhenHorizontalScroll = false;
+    private final Point mDownPoint = new Point();
 
     public LineChartView(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public LineChartView(Context context, @Nullable AttributeSet attrs) {
@@ -449,11 +451,17 @@ public class LineChartView extends FrameLayout {
         mDisallowParentIntercept = disallow;
     }
 
+    public void setInterceptEventWhenHorizontalScroll(boolean intercept) {
+        mInterceptEventWhenHorizontalScroll = intercept;
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (mDisallowParentIntercept && !getLineData().isEmpty()) {
-            getParent().requestDisallowInterceptTouchEvent(true);
-            return true;
+        if (!getLineData().isEmpty()) {
+            if (mDisallowParentIntercept) {
+                getParent().requestDisallowInterceptTouchEvent(true);
+                return true;
+            }
         }
         return super.onInterceptTouchEvent(ev);
     }
@@ -496,6 +504,15 @@ public class LineChartView extends FrameLayout {
         }
         if (highlightPoint != mHighlightPointValue) {
             onHighlightValue(lineIndex, pointIndex, highlightPoint);
+        }
+        if (mInterceptEventWhenHorizontalScroll) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                mDownPoint.set((int) event.getX(), (int) event.getY());
+            } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                if (Math.abs(mDownPoint.x - event.getX()) > Math.abs(mDownPoint.y - event.getY())) {
+                    getParent().requestDisallowInterceptTouchEvent(true);
+                }
+            }
         }
         return true;
     }
