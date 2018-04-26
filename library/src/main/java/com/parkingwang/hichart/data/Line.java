@@ -33,7 +33,7 @@ public class Line implements Iterable<Entry> {
     private String mTitle;
     private Object mTag;
 
-    private YAxisGravity mDependentYAxis;
+    private YAxisGravity mDependentYAxis = YAxisGravity.RIGHT;
 
     /**
      * Append an entry to line.
