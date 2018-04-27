@@ -39,9 +39,21 @@ public class DataRender extends BaseRender {
         if (lines.isEmpty()) {
             return;
         }
+        float maxDraw = 0f;
+        for (Line line : lines) {
+            for (int i = line.size() -1; i >= 0; i--) {
+                if (!line.get(i).imaginary) {
+                    float pointX = line.getPointValues().get(i).x;
+                    if (pointX > maxDraw) {
+                        maxDraw = pointX;
+                    }
+                    break;
+                }
+            }
+        }
 
         float percent = mHost.getAnimatorProgress();
-        float endDraw = mDrawRect.left + mDrawRect.width() * percent;
+        float endDraw = mDrawRect.left + (maxDraw - mDrawRect.left) * percent;
         boolean isClip = percent < LineChartView.PROGRESS_COMPLETE;
 
         if (isClip) {
