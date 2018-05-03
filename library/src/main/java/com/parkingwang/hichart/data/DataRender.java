@@ -6,6 +6,7 @@ package com.parkingwang.hichart.data;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
 
 import com.parkingwang.hichart.render.BaseRender;
 import com.parkingwang.hichart.view.LineChartView;
@@ -26,6 +27,8 @@ public class DataRender extends BaseRender {
     private final Paint mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
     private final Paint mCircleHolePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
     private final Paint mFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+
+    private final Rect mClipBounds = new Rect();
 
     public DataRender() {
         mLinePaint.setStyle(Paint.Style.FILL);
@@ -58,7 +61,9 @@ public class DataRender extends BaseRender {
 
         if (isClip) {
             canvas.save();
-            canvas.clipRect(0, mDrawRect.top, endDraw, mDrawRect.bottom);
+            canvas.getClipBounds(mClipBounds);
+            mClipBounds.right = (int) endDraw;
+            canvas.clipRect(mClipBounds);
         } else {
             drawFill(canvas, lines);
         }
