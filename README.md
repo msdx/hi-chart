@@ -1,7 +1,7 @@
 HiChart 
 ===
 [ ![Download](https://api.bintray.com/packages/msdx/maven/HiChart/images/download.svg) ](https://bintray.com/msdx/maven/HiChart/_latestVersion)
-[![Methods](https://img.shields.io/badge/Methods%20and%20size-374%20|%2037%20KB-e91e63.svg)](http://www.methodscount.com/?lib=com.githang.hichart%3Ahichart-core%3A0.2.1)
+![Methods](https://img.shields.io/badge/Methods%20and%20size-416%20|%2042%20KB-e91e63.svg)
 
 HiChart 是一个显示折线图的图表库，目前只支持折线图的绘制。
 
@@ -21,12 +21,12 @@ allprojects {
 
 添加依赖 （将版本号改为当前最新版本）：
 ```groovy
-implementation 'com.githang.hichart:hichart-core:0.2.1'
+implementation 'com.githang.hichart:hichart-core:0.3'
 ```
 
 或使用SNAPSHOT版本：
 ```groovy
-implementation 'com.githang.hichart:hichart-core:0.2.1-SNAPSHOT'
+implementation 'com.githang.hichart:hichart-core:0.3-SNAPSHOT'
 ```
 
 详细使用见demo以及javadoc.
