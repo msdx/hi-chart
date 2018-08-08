@@ -17,18 +17,18 @@ import java.util.List;
  * The render to draw the lines.
  *
  * @author 黄浩杭 (huanghaohang@parkingwang.com)
- * @version 0.2
+ * @version 0.3.1
  * @since 2017-06-14 0.1
  */
 public class DataRender extends BaseRender {
     private LineChartView mHost;
 
-    private final Paint mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-    private final Paint mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-    private final Paint mCircleHolePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-    private final Paint mFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+    protected final Paint mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+    protected final Paint mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+    protected final Paint mCircleHolePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+    protected final Paint mFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
 
-    private final Rect mClipBounds = new Rect();
+    protected final Rect mClipBounds = new Rect();
 
     public DataRender() {
         mLinePaint.setStyle(Paint.Style.FILL);
