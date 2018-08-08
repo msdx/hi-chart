@@ -162,6 +162,10 @@ public class DataRender extends BaseRender {
         mHost = view;
     }
 
+    protected LineChartView getHost() {
+        return mHost;
+    }
+
     /**
      * @return The lines data of the line chart.
      */

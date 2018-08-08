@@ -156,6 +156,7 @@ public class LineChartView extends FrameLayout {
 
     public void setDataRender(DataRender dataRender) {
         mDataRender = dataRender;
+        mDataRender.attachTo(this);
     }
 
     public DividersRender getDividersRender() {
