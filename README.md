@@ -21,12 +21,12 @@ allprojects {
 
 添加依赖 （将版本号改为当前最新版本）：
 ```groovy
-implementation 'com.githang.hichart:hichart-core:0.3'
+implementation 'com.githang.hichart:hichart-core:0.3.1'
 ```
 
 或使用SNAPSHOT版本：
 ```groovy
-implementation 'com.githang.hichart:hichart-core:0.3-SNAPSHOT'
+implementation 'com.githang.hichart:hichart-core:0.3.1-SNAPSHOT'
 ```
 
 详细使用见demo以及javadoc.
